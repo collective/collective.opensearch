@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<object name="portal_properties" meta_type="Plone Properties Tool">
+  <object name="opensearch_properties" meta_type="Plone Property Sheet">
+    <property name="title" type="string">OpenSearch</property>
+    <property name="description" type="text"> Default description
+    </property>
+    <property name="tags" type="lines" />
+    <property name="contact" type="string" />    
+    <property name="longName" type="string" />
+    <property name="attribution" type="string" />
+    <property name="language" type="string" > * </property>   
+    <property name="inEncoding" type="string" />
+    <property name="outEncoding" type="string" />     
+    <property name="developer" type="string" />
+    <property name="searchMethod" type="string">title</property>        
+    <property name="syndi" type="string" >open</property>    
+    <property name="adult" type="boolean" >False</property>
+    <property name="allowDiscovery" type="boolean">True</property>
+    <property name="allowRSS" type="boolean">True</property>
+    <property name="allowAtom" type="boolean">True</property>
+    <property name="allowXHTML" type="boolean">True</property>
+  </object>
+</object>

@@ -1,0 +1,11 @@
+<tal:json condition="python:'command' in request.keys()">
+		["<span tal:replace="python:request['command']"> Word to suggest </span>",[
+		<tal:block repeat="elem python:view.SearchSuggestions(request['command'])">
+			"<span tal:replace="python:elem.getObject().Title()"> bla bla </span>",
+		</tal:block>
+		""]]
+	</tal:json>
+<tal:error condition="python: not ('command' in request.keys()) ">
+    []
+</tal:error>
+

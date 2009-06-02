@@ -1,0 +1,4 @@
+Introduction
+============
+
+collective.opensearch

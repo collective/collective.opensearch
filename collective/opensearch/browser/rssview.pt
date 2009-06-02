@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+   <rss version="2.0" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+                      xmlns:atom="http://www.w3.org/2005/Atom"
+                      xmlns:tal="http://xml.zope.org/namespaces/tal">
+	   <channel>
+
+	   <title>Opensearch Results</title>
+	   <link> <tal:url replace="view/context/absolute_url"/> </link>
+	   <description><tal:descripcion replace="view/context/Title" /></description>
+	   <language></language>
+       <tal:content condition="python:('search' in view.request.keys())">  
+         <tal:search define="elemList python:view.Search()">
+           <opensearch:totalResults><span tal:replace="python:view.lenResult"> X items</span></opensearch:totalResults>
+           <opensearch:startIndex><span tal:replace="python:view.startIndex">PageIndex</span></opensearch:startIndex>
+           <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+           <atom:link rel="search" type="application/opensearchdescription+xml"
+                title="" href="" tal:attributes="title view/context/Title; href string:${view/context/absolute_url}/opensearch+description" />
+           <opensearch:Query role="request" searchTerms="" startPage="" tal:attributes="searchTerms view/searchTerms; 
+                                                                                        startPage view/startPage"/> 	   
+	         <tal:block repeat="elem elemList">
+		      <item>
+			    <title> <span tal:replace="python:elem.getObject().Title()" /> </title>
+			    <link> 	<span tal:replace="python:elem.getObject().absolute_url()" /> </link>
+		            <description> <span tal:replace="python:elem.getObject().Description()" /> </description>
+			    <category>
+		            	Plone Element
+		            </category>
+		       </item>
+	         </tal:block>
+	       </tal:search>
+	       </tal:content>
+	        <tal:error condition="python: not ('search' in view.request.keys()) ">
+			    <item>
+				    <title> Error , bad request </title>
+				    <link><tal:url replace="container/absolute_url" /></link>
+				    <description>  Bad request sended </description>			
+			    </item>
+	       </tal:error>
+       </channel>
+ </rss>
+
