@@ -11,7 +11,15 @@
      name="default"
      title="OpenSearch"
      directory="profiles/default"
-     description="Extension Profile for collective.opensearch."
+     description="Extension Profile for 'installing' collective.opensearch."
+     provides="Products.GenericSetup.interfaces.EXTENSION"
+     />
+
+  <genericsetup:registerProfile
+     name="uninstall"
+     title="OpenSearch Uninstall"
+     directory="profiles/uninstall"
+     description="Extension Profile for 'uninstalling' collective.opensearch."
      provides="Products.GenericSetup.interfaces.EXTENSION"
      />
 
