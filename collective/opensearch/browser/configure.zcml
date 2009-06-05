@@ -42,7 +42,6 @@
      permission="zope2.View"
      />
 
-
   <browser:resource 
      name="opensearch.png" 
      image="opensearch.png" />
@@ -58,8 +57,5 @@
      name="Suggestion Method"
      provides="zope.schema.interfaces.IVocabularyFactory"
      />
-
-  <five:traversable class="OFS.Application.Application" /> 
-  <five:traversable class="Products.CMFCore.PortalObject.PortalObjectBase" />
 
 </configure>
