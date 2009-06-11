@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<import-steps>
+    <import-step
+        id="controlpanel"
+        version="20090611-1"
+        handler="collective.opensearch.setuphandlers.uninstallControlPanel"
+        title="Uninstall Control Panel">
+    Remove control panel configlet imported from profile-collective.opensearch:default.
+    </import-step>
+    <import-step
+        id="propertiestool"
+        version="20090611-1"
+        handler="collective.opensearch.setuphandlers.uninstallPropertiesTool"
+        title="Uninstall Properties Tool">
+    Remove properties imported from profile-collective.opensearch:default.
+    </import-step>
+    <!-- <import-step
+        id="action-icons"
+        version="20090611-1"
+        handler="collective.opensearch.setuphandlers.uninstallActionIcons"
+        title="Uninstall Action Icons">
+    Remove action icons imported from profile-collective.opensearch:default.
+    </import-step> -->
+</import-steps>
