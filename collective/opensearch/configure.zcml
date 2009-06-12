@@ -5,6 +5,8 @@
   xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
   i18n_domain="OpenSearch">
 
+  <five:registerPackage package="." initialize=".initialize" />
+
   <include package=".browser" />
 
   <genericsetup:registerProfile
