@@ -42,7 +42,7 @@ class TestOpenSearchControlPanel(PloneTestCase.PloneTestCase):
         portal_setup = self.portal.portal_setup
         # Import the controlpanel step and its dependencies from the uninstall profile.
         self.loginAsPortalOwner()
-        portal_setup.runImportStepFromProfile('profile-collective.opensearch:uninstall', 'controlpanel')
+        portal_setup.runImportStepFromProfile('profile-collective.opensearch:uninstall', 'uninstall_controlpanel')
         self.logout()
         # Verify the controlpanel step deleted the configlet entry.
         portal_controlpanel = self.portal.portal_controlpanel

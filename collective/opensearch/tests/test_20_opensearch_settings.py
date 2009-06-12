@@ -88,7 +88,7 @@ class TestOpenSearchAdapter(PloneTestCase.PloneTestCase):
         portal_setup = self.portal.portal_setup
         # Import the propertiestool step and its dependencies from the uninstall profile.
         self.loginAsPortalOwner()
-        portal_setup.runImportStepFromProfile('profile-collective.opensearch:uninstall', 'propertiestool')
+        portal_setup.runImportStepFromProfile('profile-collective.opensearch:uninstall', 'uninstall_propertiestool')
         self.logout()
         # Verify the propertiestool step deleted the opensearch_properties object.
         portal_properties = self.portal.portal_properties
