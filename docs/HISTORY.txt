@@ -1,8 +1,0 @@
-Changelog
-=========
-
-0.1 - Unreleased
-----------------
-
-* Moved from JAOP (http://plone.org/products/jaop-just-an-opensearch-product-1) to collective.opensearch
-
