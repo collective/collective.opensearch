@@ -11,8 +11,6 @@ class IAtomView(Interface):
     Atom view interface
     """
 
-    def test():
-        """ test method"""
 
 
 class AtomView(BrowserView):
@@ -33,10 +31,4 @@ class AtomView(BrowserView):
     def portal(self):
         return getToolByName(self.context, 'portal_url').getPortalObject()
 
-    def test(self):
-        """
-        test method
-        """
-        dummy = _(u'a dummy string')
 
-        return {'dummy': dummy}

@@ -22,7 +22,6 @@
       for="*"
       name="opensearch_suggestions"
       class=".suggestionview.SuggestionView"
-      template="suggestionview.pt"
       allowed_interface=".suggestionview.ISuggestionView"
       permission="zope.Public"
       />

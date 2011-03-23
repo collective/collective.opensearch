@@ -1,3 +1,18 @@
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
+import json
 from zope.interface import implements, Interface
 
 from Products.Five import BrowserView
@@ -11,8 +26,6 @@ class ISuggestionView(Interface):
     Suggestion view interface
     """
 
-    def test():
-        """ test method"""
 
 
 class SuggestionView(BrowserView):
@@ -33,10 +46,16 @@ class SuggestionView(BrowserView):
     def portal(self):
         return getToolByName(self.context, 'portal_url').getPortalObject()
 
-    def test(self):
-        """
-        test method
-        """
-        dummy = _(u'a dummy string')
-
-        return {'dummy': dummy}
+    def __call__(self):
+        limit = 10
+        form = self.request.form
+        searchterm = form.get('command', '')
+        if ( searchterm == '*' ):
+            searchterm = ''
+        json_results = [searchterm, ]
+        if searchterm:
+            searchterm += '*'
+        search_results = self.portal_catalog(Title = searchterm, sort_limit=limit)[:limit]
+        json_results += [result.Title for result in search_results]
+        self.request.RESPONSE.setHeader('Content-Type','application/json; charset=utf-8')
+        return json.dumps(json_results)

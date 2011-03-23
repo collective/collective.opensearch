@@ -11,8 +11,7 @@ class IRSSView(Interface):
     RSS view interface
     """
 
-    def test():
-        """ test method"""
+
 
 
 class RSSView(BrowserView):
@@ -33,10 +32,3 @@ class RSSView(BrowserView):
     def portal(self):
         return getToolByName(self.context, 'portal_url').getPortalObject()
 
-    def test(self):
-        """
-        test method
-        """
-        dummy = _(u'a dummy string')
-
-        return {'dummy': dummy}

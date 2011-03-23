@@ -14,9 +14,14 @@
         indexOffset="0"
         template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=atom"
         tal:attributes="template string:${here/portal_url}/opensearch_atom.xml?SearchableText={searchTerms}&amp;b_start={startIndex?}" />
-    <Url type="application/xhtml+xml"
-      indexOffset="0"
-      tal:attributes="template string:${here/portal_url}/search?SearchableText={searchTerms}&amp;b_start={startIndex?}" />
+    <Url type="text/html"
+        indexOffset="0"
+        tal:attributes="template string:${here/portal_url}/search?SearchableText={searchTerms}&amp;b_start={startIndex?}" />
     <Url type="application/x-suggestions+json"
-      tal:attributes="template string:${here/portal_url}/opensearch_suggestions?command={searchTerms}"/>
+        tal:attributes="template string:${here/portal_url}/opensearch_suggestions?command={searchTerms}"/>
+    <Url type="application/opensearchdescription+xml"
+        rel="self"
+        template="http://www.foo.com/mysearchdescription.xml"
+        tal:attributes="template string:${here/portal_url}/opensearch_description.xml" />
+
 </OpenSearchDescription>
