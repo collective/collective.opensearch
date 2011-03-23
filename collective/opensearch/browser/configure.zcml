@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
@@ -7,13 +8,13 @@
 
   <!-- -*- extra stuff goes here -*- -->
 
+
+  <!-- Control panel -->
   <browser:page
-      for="*"
-      name="opensearch_settings_view"
-      class=".settingsview.SettingsView"
-      template="settingsview.pt"
-      allowed_interface=".settingsview.ISettingsView"
-      permission="zope.Public"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="opensearch_settings"
+      class=".settingsview.OpensearchSettingsControlPanel"
+      permission="cmf.ManagePortal"
       />
 
 

@@ -1,18 +1,20 @@
 from zope.interface import implements, Interface
+from zope.component import getUtility
 
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five import BrowserView
+
+from plone.registry.interfaces import IRegistry
 from Products.CMFCore.utils import getToolByName
 
 from collective.opensearch import opensearchMessageFactory as _
-
+from collective.opensearch.interfaces.settings import IOpenSearchSettings
 
 class IDescriptionView(Interface):
     """
     Description view interface
     """
 
-    def test():
-        """ test method"""
 
 
 class DescriptionView(BrowserView):
@@ -20,23 +22,27 @@ class DescriptionView(BrowserView):
     Description browser view
     """
     implements(IDescriptionView)
+    settings = None
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        registry = getUtility(IRegistry)
+        self.settings = registry.forInterface(IOpenSearchSettings)
 
-    @property
-    def portal_catalog(self):
-        return getToolByName(self.context, 'portal_catalog')
 
-    @property
-    def portal(self):
-        return getToolByName(self.context, 'portal_url').getPortalObject()
+    def get_title(self):
+        return self.settings.short_name
 
-    def test(self):
-        """
-        test method
-        """
-        dummy = _(u'a dummy string')
+    def get_description(self):
+        return self.settings.description
 
-        return {'dummy': dummy}
+    def get_tags(self):
+        return self.settings.tags
+
+    def get_contact(self):
+        return self.settings.contact
+
+    def __call__(self):
+        self.request.RESPONSE.setHeader('Content-Type','text/xml; charset=utf-8')
+        return ViewPageTemplateFile('descriptionview.pt')(self)
