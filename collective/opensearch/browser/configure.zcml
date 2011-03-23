@@ -1,0 +1,72 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.opensearch">
+
+  <include package="plone.app.contentmenu" />
+
+  <!-- -*- extra stuff goes here -*- -->
+
+  <browser:page
+      for="*"
+      name="opensearch_settings_view"
+      class=".settingsview.SettingsView"
+      template="settingsview.pt"
+      allowed_interface=".settingsview.ISettingsView"
+      permission="zope.Public"
+      />
+
+
+  <browser:page
+      for="*"
+      name="opensearch_suggestions"
+      class=".suggestionview.SuggestionView"
+      template="suggestionview.pt"
+      allowed_interface=".suggestionview.ISuggestionView"
+      permission="zope.Public"
+      />
+
+
+  <browser:page
+      for="*"
+      name="opensearch_rss.xml"
+      class=".rssview.RSSView"
+      template="rssview.pt"
+      allowed_interface=".rssview.IRSSView"
+      permission="zope.Public"
+      />
+
+
+  <browser:page
+      for="*"
+      name="opensearch_atom.xml"
+      class=".atomview.AtomView"
+      template="atomview.pt"
+      allowed_interface=".atomview.IAtomView"
+      permission="zope.Public"
+      />
+
+
+  <browser:page
+      for="*"
+      name="opensearch_description.xml"
+      class=".descriptionview.DescriptionView"
+      template="descriptionview.pt"
+      allowed_interface=".descriptionview.IDescriptionView"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+     name="plone.htmlhead.opensearch.autodiscovery"
+     manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
+     class=".viewlets.AutoDiscovery"
+     template="autodiscovery.pt"
+     permission="zope2.View"
+     />
+
+  <browser:resource
+     name="opensearch.png"
+     image="opensearch.png" />
+
+
+</configure>
