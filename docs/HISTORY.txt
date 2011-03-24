@@ -1,7 +1,34 @@
 Changelog
 =========
 
-1.0dev (unreleased)
--------------------
+1.0 (xxxx-xx-xx)
+----------------
 
-- Initial release
+- Created recipe with ZopeSkel
+  [""]
+
+
+JaoP  0.1 (Sep 23, 2008)
+------------------------
+
+- First Jaop release with the default opensearch properties
+- Added default autodiscovery page ( need some changes ) for Firefox / IE
+- Implemented the rss view
+- Implemented the alpha version of suggestions
+
+
+PLOS 0.2 (Jul 21, 2007)
+-----------------------
+
+- Enable Plone to search OpenSearch compliant search providers
+- added search feed content type
+- additions to the RSS and ATOM responses
+
+
+PLOS 0.1 (May 24, 2007)
+-----------------------
+
+- initial release
+
+
+

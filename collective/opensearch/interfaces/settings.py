@@ -27,15 +27,17 @@ class IOpenSearchSettings(Interface):
     short_name = schema.TextLine(title=_(u'Title'),
                      description=_(u'A short name for your Open Search widget. Limited to 16 characters'),
                      max_length=16,
-                     required=False,
-                     default=u'',)
+                     min_length=2,
+                     required=True,
+                     default=u'Search Site',)
 
     description = schema.Text(title=_(u'Description'),
                        description=_(u'A human-readable description of the'
                                      'search engine. Limited to 1024 characters'),
                        max_length=1024,
-                       required=False,
-                       default=u'',)
+                       min_length=2,
+                       required=True,
+                       default=u'Search this site using open search ...',)
 
     tags = schema.TextLine(title=_(u'Tags'),
                 description=_(u'A set of words that are used as keywords to identify and categorize this search content delimited by the space character. '),
@@ -47,4 +49,12 @@ class IOpenSearchSettings(Interface):
                        description=_(u'An email address of someone to contact.'),
                        required=False,
                        default=u'',)
+
+    suggestion_limit = schema.Int(title=_(u'Suggestions'),
+                       description=_(u'Number of suggestions to be returned to the browser (0 turns suggestions off).'),
+                       required=True,
+                       min = 0,
+                       max = 100,
+                       default=5,)
+
 
