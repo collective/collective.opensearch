@@ -14,7 +14,7 @@
      <description i18n:translate="batch_x_items_matching_your_criteria">
             <span i18n:name="number" tal:omit-tag="" tal:content="view/total_results">234</span> items matching your criteria.
      </description>
-     <generator>
+     <generator tal:content="string:collective.opensearch ${view/version}">
       collective.opensearch 1.0
      </generator>
      <opensearch:totalResults tal:content="view/total_results">4230000</opensearch:totalResults>

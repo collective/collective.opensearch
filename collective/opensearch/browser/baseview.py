@@ -30,13 +30,15 @@ class BaseView(BrowserView):
     search_results = []
     total_results = 0
     uid = ''
-
+    version = '1.0'
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
         registry = getUtility(IRegistry)
         self.settings = registry.forInterface(IOpenSearchSettings)
+        QI = getToolByName(context, 'portal_quickinstaller')
+        self.version=QI.getProductVersion('collective.opensearch')
 
 
     def get_author_info(self, creator):
