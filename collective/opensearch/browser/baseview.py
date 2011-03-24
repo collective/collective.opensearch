@@ -1,11 +1,10 @@
 import urllib
-from zope.interface import implements, Interface
 from zope.component import getUtility
 
 from Products.Five import BrowserView
 
 from Products.CMFCore.utils import getToolByName
-
+from Products.Archetypes.interfaces.referenceable import IReferenceable
 from plone.registry.interfaces import IRegistry
 
 from collective.opensearch import opensearchMessageFactory as _
@@ -16,18 +15,11 @@ from collective.opensearch.browser import search
 def not_implemented(*args, **kwargs):
     raise NotImplementedError
 
-class IBaseView(Interface):
-    """
-    Base view interface
-    """
-
-
 
 class BaseView(BrowserView):
     """
     Base browser view
     """
-    implements(IBaseView)
     render = not_implemented
     settings=None
     searchterm=''
@@ -37,6 +29,7 @@ class BaseView(BrowserView):
     end = 0
     search_results = []
     total_results = 0
+    uid = ''
 
 
     def __init__(self, context, request):
@@ -44,6 +37,21 @@ class BaseView(BrowserView):
         self.request = request
         registry = getUtility(IRegistry)
         self.settings = registry.forInterface(IOpenSearchSettings)
+
+
+    def get_author_info(self, creator):
+        author = self.portal_membership().getMemberInfo(creator)
+        ad = {'name': creator,
+              'uri': self.portal_url() + '/author/' + creator}
+        if author:
+            if author['fullname']:
+                ad['name'] = author['fullname']
+            if author['home_page']:
+                ad['uri'] = author['home_page']
+        return ad
+
+    def portal_membership(self):
+        return getToolByName(self.context, 'portal_membership')
 
     def portal_url(self):
         return getToolByName(self.context, 'portal_url')()
@@ -65,11 +73,16 @@ class BaseView(BrowserView):
         except ValueError:
             self.max_items=20
         try:
-            self.end = abs(int(self.request.get('b_end', self.start + self.max_items)))
+            self.end = abs(int(self.request.get('b_end',
+                            self.start + self.max_items)))
         except ValueError:
             self.end = self.start + self.max_items
         if self.end < self.start:
             self.end = self.start
+        if IReferenceable.providedBy(self.context):
+            self.uid = self.portal_url + '/resolveuid/' + self.context.UID()
+        else:
+            self.uid = self.context.absolute_url()
 
         search_results = search.query_catalog(self.context, self.request,
                                     use_types_blacklist=True)

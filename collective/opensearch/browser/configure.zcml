@@ -8,16 +8,6 @@
 
   <!-- -*- extra stuff goes here -*- -->
 
-  <browser:page
-      for="*"
-      name="base_view"
-      class=".baseview.BaseView"
-      template="baseview.pt"
-      allowed_interface=".baseview.IBaseView"
-      permission="zope.Public"
-      />
-
-
 
   <!-- Control panel -->
   <browser:page
