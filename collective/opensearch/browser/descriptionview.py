@@ -43,6 +43,9 @@ class DescriptionView(BrowserView):
     def get_contact(self):
         return self.settings.contact
 
+    def allow_suggestions(self):
+        return self.settings.suggestion_limit > 0
+
     def __call__(self):
         self.request.RESPONSE.setHeader('Content-Type','text/xml; charset=utf-8')
         return ViewPageTemplateFile('descriptionview.pt')(self)

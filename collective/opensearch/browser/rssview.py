@@ -1,10 +1,6 @@
 from zope.interface import implements, Interface
-
-from Products.Five import BrowserView
-from Products.CMFCore.utils import getToolByName
-
-from collective.opensearch import opensearchMessageFactory as _
-
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from baseview import BaseView
 
 class IRSSView(Interface):
     """
@@ -12,23 +8,16 @@ class IRSSView(Interface):
     """
 
 
-
-
-class RSSView(BrowserView):
+class RSSView(BaseView):
     """
     RSS browser view
     """
     implements(IRSSView)
+    render = ViewPageTemplateFile('rssview.pt')
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
 
-    @property
-    def portal_catalog(self):
-        return getToolByName(self.context, 'portal_catalog')
+    def __call__(self):
+        self.request.RESPONSE.setHeader('Content-Type','text/xml; charset=utf-8')
+        return super(RSSView, self).__call__()
 
-    @property
-    def portal(self):
-        return getToolByName(self.context, 'portal_url').getPortalObject()
 

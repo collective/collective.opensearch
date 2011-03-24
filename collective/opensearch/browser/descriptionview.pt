@@ -18,6 +18,7 @@
         indexOffset="0"
         tal:attributes="template string:${here/portal_url}/search?SearchableText={searchTerms}" />
     <Url type="application/x-suggestions+json"
+        tal:condition="view/allow_suggestions"
         tal:attributes="template string:${here/portal_url}/opensearch_suggestions?command={searchTerms}"/>
     <Url type="application/opensearchdescription+xml"
         rel="self"

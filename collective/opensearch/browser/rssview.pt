@@ -1,15 +1,50 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      lang="en"
-      metal:use-macro="here/main_template/macros/master"
-      i18n:domain="collective.opensearch">
-<body>
-    <div metal:fill-slot="main">
-        <tal:main-macro metal:define-macro="main"
-                        tal:define="testview view/test">
+<?xml version="1.0" encoding="UTF-8"?>
+ <rss version="2.0"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+      xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/"
+      xmlns:atom="http://www.w3.org/2005/Atom">
+   <channel tal:define="DateTime python:modules['DateTime'].DateTime;">
 
-            <span tal:content="testview/dummy">test</span>
+     <title tal:content="string:${view/feed_title}: ${view/searchterm}">Example.com Search: New York history</title>
+     <link tal:content="string:${view/portal_url}/search?SearchableText=${view/searchterm_url}">http://example.com/search?SearchableText=New+York+history</link>
+     <description i18n:translate="batch_x_items_matching_your_criteria">
+            <span i18n:name="number" tal:omit-tag="" tal:content="view/total_results">234</span> items matching your criteria.
+     </description>
+     <opensearch:totalResults tal:content="view/total_results">4230000</opensearch:totalResults>
+     <opensearch:startIndex tal:content="view/start">21</opensearch:startIndex>
+     <opensearch:itemsPerPage tal:content="view/max_items">10</opensearch:itemsPerPage>
+     <atom:link rel="search" type="application/opensearchdescription+xml" href="http://example.com/opensearchdescription.xml"
+      tal:attributes="href string:${view/portal_url}/opensearch_description.xml"/>
+     <opensearch:Query role="request" searchTerms="New York History" startIndex="1"
+      tal:attributes="searchTerms view/searchterm; startIndex view/start"/>
+     <item tal:repeat="object view/search_results">
+       <title tal:content="object/Title">New York History</title>
+       <link tal:content="object/getURL">http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html</link>
+       <description tal:content="object/Description">
+         ... Harlem.NYC - A virtual tour and information on
+         businesses ...  with historic photos of Columbia's own New York
+         neighborhood ... Internet Resources for the City's History. ...
+       </description>
+       <pubDate tal:content="python: (DateTime(object.Date).rfc822())">Sat, 07 Sep 2002 0:00:01 GMT</pubDate>
+       <guid isPermaLink="true"
+            tal:content="string:${view/portal_url}/resolveuid/${object/UID}">http://inessential.com/2002/09/01.php#a2</guid>
+       <tal:block tal:repeat="item object/Subject">
+             <category domain="http://www.fool.com/cusips"
+                tal:attributes="domain string:${view/portal_url}/categories/Subject"
+                tal:content="item">MSFT</category>
+       </tal:block>
+       <author tal:content="object/Creator">Creator</author>
+       <relevance:score tal:condition="object/data_record_normalized_score_"
+                        tal:content="python:float(object.data_record_normalized_score_)/100">0.95</relevance:score>
+       <dc:publisher tal:content="object/Publisher">Publisher</dc:publisher>
 
-        </tal:main-macro>
-    </div>
-</body>
-</html>
+       <dc:rights tal:content="object/Rights">Rights</dc:rights>
+       <dc:date tal:content="python: object.modified.HTML4()">Modification date</dc:date>
+       <dc:type tal:content="object/Type">Type</dc:type>
+     </item>
+   </channel>
+ </rss>
