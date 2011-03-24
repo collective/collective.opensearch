@@ -14,6 +14,9 @@
      <description i18n:translate="batch_x_items_matching_your_criteria">
             <span i18n:name="number" tal:omit-tag="" tal:content="view/total_results">234</span> items matching your criteria.
      </description>
+     <generator>
+      collective.opensearch 1.0
+     </generator>
      <opensearch:totalResults tal:content="view/total_results">4230000</opensearch:totalResults>
      <opensearch:startIndex tal:content="view/start">21</opensearch:startIndex>
      <opensearch:itemsPerPage tal:content="view/max_items">10</opensearch:itemsPerPage>

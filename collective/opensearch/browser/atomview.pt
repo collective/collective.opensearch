@@ -10,6 +10,10 @@
     <title tal:content="string:${view/feed_title}: ${view/searchterm}">Example.com Search: New York history</title>
     <updated tal:content="python: DateTime().HTML4()">2003-12-13T18:30:02Z</updated>
     <id tal:content="view/uid">urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+    <generator uri="http://plone.org/products/plos" version="1.0">
+      collective.opensearch
+    </generator>
+    <icon tal:content="string:${here/portal_url}/favicon.ico">http://example.com/favicon.ico</icon>
     <opensearch:totalResults tal:content="view/total_results">4230000</opensearch:totalResults>
     <opensearch:startIndex tal:content="view/start">21</opensearch:startIndex>
     <opensearch:itemsPerPage tal:content="view/max_items">10</opensearch:itemsPerPage>
@@ -29,7 +33,7 @@
         tal:attributes="href string:${here/portal_url}/opensearch_description.xml"/>
     <entry tal:repeat="object view/search_results">
         <title tal:content="object/Title">New York History</title>
-        <link tal:attributes="href object/getURL"/>
+        <link rel="alternate" tal:attributes="href object/getURL"/>
         <id tal:content="string:${view/portal_url}/resolveuid/${object/UID}">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
         <updated tal:content="python:(DateTime(object.modified).HTML4())">2003-12-13T18:30:02Z</updated>
         <summary type="text" tal:content="object/Description">
@@ -42,7 +46,7 @@
            <uri tal:content="author/uri">http://example.com/~johndoe</uri>
         </author>
         <tal:block tal:repeat="item object/Subject">
-            <category tal:attributes="term item"/>
+            <category tal:attributes="term item; scheme string:${view/portal_url}/categories/Subject"/>
         </tal:block>
         <rights type="html" tal:content="object/Rights">
         &amp;copy; 2005 John Doe
