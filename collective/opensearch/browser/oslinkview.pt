@@ -5,8 +5,7 @@
 <body>
     <metal:content-core fill-slot="content-core">
         <metal:content-core define-macro="content-core">
-            <div id="content-core" i18n:domain="plone"
-                tal:define="results view/get_search_results">
+            <div id="content-core" i18n:domain="plone">
                 <form name="opensearchform"
                       action="."
                       class="searchPage"
@@ -25,17 +24,18 @@
                            i18n:attributes="value label_search;"/>
                 </form>
                 <br/>
+                <tal:results tal:define="results view/get_search_results">
                 <h2 class="documentFirstHeading">
                     <span i18n:translate="heading_search_results">
                         Search results
                     </span>
-                    <span class="discreet">
+                    <!--span class="discreet">
                     &mdash;
                     <span i18n:translate="batch_x_items_matching_your_criteria"
                     ><span i18n:name="number"
                     tal:omit-tag=""
                     tal:content="python:len(results)">234</span> items matching your search terms</span>
-                  </span>
+                  </span-->
                 </h2>
                 <div tal:condition="not: results">
                     <p><strong i18n:translate="description_no_results_found">No results were found.</strong></p>
@@ -75,6 +75,7 @@
                     </tal:results>
                     </dl>
                 </div>
+                </tal:results>
             </div>
         </metal:content-core>
     </metal:content-core>

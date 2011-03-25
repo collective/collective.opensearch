@@ -38,7 +38,7 @@ setup(name='collective.opensearch',
       version=version,
       description="""Collective Opensearch Collective.opensearch adds
         the ability to produce search results in the simple OpenSearch
-        format. It is a rewrite of PlOS + JAOP for plone 4""",
+        format.""",
       long_description=long_description,
       # Get more strings from
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -59,6 +59,7 @@ setup(name='collective.opensearch',
       install_requires=['setuptools',
                         # -*- Extra requirements: -*-
                          'plone.app.registry',
+                         'feedparser',
                         ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),

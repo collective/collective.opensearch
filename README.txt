@@ -21,11 +21,14 @@ collective.opensearch enables you to syndicate the search results of
 your plone site by formatting them in the RSS or Atom formats,
 augmented with OpenSearch response elements.
 
-collective.opensearch adds a type SearchFeed that lets you search
-OpenSearch (or other Searches that return RSS or Atom so any plone Site)
-compatible search providers within your site.
+collective.opensearch adds a view to the link type that lets you search
+OpenSearch (or other searches that return RSS or Atom so any plone Site)
+compatible search providers within your site. when you add a link with an
+open search url this view will be automatically set.
 
-To search e.g. plone.org from your site add a search feed with the url:
+To search e.g. plone.org from your site add a search feed with the url: ::
+
+    http://plone.org/search_rss?SearchableText={searchTerms}
 
 
 
