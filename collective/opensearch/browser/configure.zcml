@@ -8,6 +8,16 @@
 
   <!-- -*- extra stuff goes here -*- -->
 
+  <browser:page
+      for="Products.ATContentTypes.interfaces.link.IATLink"
+      name="oslink_view"
+      class=".oslinkview.OsLinkView"
+      template="oslinkview.pt"
+      allowed_interface=".oslinkview.IOsLinkView"
+      permission="zope.Public"
+      />
+
+
 
   <!-- Control panel -->
   <browser:page

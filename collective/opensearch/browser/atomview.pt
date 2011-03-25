@@ -5,6 +5,7 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+       i18n:domain="plone"
        xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/"
        tal:define="DateTime python:modules['DateTime'].DateTime;">
     <title tal:content="string:${view/feed_title}: ${view/searchterm}">Example.com Search: New York history</title>

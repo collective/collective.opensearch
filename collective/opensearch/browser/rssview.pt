@@ -3,6 +3,7 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="plone"
       xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
       xmlns:dc="http://purl.org/dc/elements/1.1/"
       xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/"
