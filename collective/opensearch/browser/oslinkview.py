@@ -21,7 +21,7 @@ from Products.CMFCore.utils import getToolByName
 
 from collective.opensearch import opensearchMessageFactory as _
 import feedparser
-
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 logger = logging.getLogger('collective.opensearch')
 
@@ -36,11 +36,15 @@ class OsLinkView(BrowserView):
     """
     implements(IOsLinkView)
     searchterm = ''
+    results_template = ViewPageTemplateFile('osresults.pt')
 
     @property
     def searchterm(self):
         return self.request.form.get('SearchableText', '')
 
+
+    def display_results(self):
+        return self.results_template()
 
     def __init__(self, context, request):
         self.context = context
@@ -65,5 +69,12 @@ class OsLinkView(BrowserView):
         qurl = url.replace('%7BsearchTerms%7D',search_term)
         results= feedparser.parse(qurl)
         return results['entries']
+
+class OsLinkSnippet(OsLinkView):
+
+
+
+    def __call__(self):
+        return self.display_results()
 
 

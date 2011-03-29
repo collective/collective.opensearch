@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="collective.opensearch">
+<body>
+  <metal:content-core fill-slot="content-core">
+    <metal:content-core define-macro="content-core">
+        <div id="content-core" i18n:domain="plone">
+            <form name="opensearchform"
+                  action="."
+                  class="searchPage"
+                  tal:attributes="action string:${here/absolute_url}/@@osfolder_view">
+                <input class="searchPage"
+                       name="SearchableText"
+                       type="text"
+                       size="25"
+                       title="Search Site"
+                       i18n:attributes="title title_search_title;"
+                       tal:attributes="value view/searchterm;"
+                       />
+                <input class="searchPage searchButton"
+                       type="submit"
+                       value="Search"
+                       i18n:attributes="value label_search;"/>
+            </form>
+            <dl class="enableFormTabbing">
+                <tal:loop tal:repeat="search view/get_searches">
+                   <dt tal:content="search/Title"
+                        tal:attributes="id string:fieldsetlegend-${search/id}">
+                        Search title</dt>
+                    <dd tal:attributes="id string:fieldset-${search/id}">
+                       <div tal:content="search/Description"> Description </div>
+                       <div id="searchresults"
+                        tal:attributes="id string:searchresults-${search/id}">
+                        Loading please wait.
+                        </div>
+                       <script type="text/javascript"
+                                tal:content="structure python:view.get_js(search)">
+                           $.get('ajax/opensearchresults.html',
+                                    function(data) {
+                                      $('#searchresults').html(data);
+                                      alert('Load was performed.');
+                                });
+                        </script>
+                    </dd>
+                </tal:loop>
+            </dl>
+        </div>
+    </metal:content-core>
+  </metal:content-core>
+</body>
+</html>

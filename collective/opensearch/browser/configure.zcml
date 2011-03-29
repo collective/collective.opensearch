@@ -9,14 +9,33 @@
   <!-- -*- extra stuff goes here -*- -->
 
   <browser:page
+      for="plone.app.folder.folder.IATUnifiedFolder"
+      name="osfolder_view"
+      class=".osfolderview.OSFolderView"
+      template="osfolderview.pt"
+      allowed_interface=".osfolderview.IOSFolderView"
+      permission="zope2.View"
+      />
+
+
+  <browser:page
       for="Products.ATContentTypes.interfaces.link.IATLink"
       name="oslink_view"
       class=".oslinkview.OsLinkView"
       template="oslinkview.pt"
       allowed_interface=".oslinkview.IOsLinkView"
-      permission="zope.Public"
+      permission="zope2.View"
       />
 
+
+
+  <browser:page
+      for="Products.ATContentTypes.interfaces.link.IATLink"
+      name="opensearchresults.html"
+      class=".oslinkview.OsLinkSnippet"
+      allowed_interface=".oslinkview.IOsLinkView"
+      permission="zope2.View"
+      />
 
 
   <!-- Control panel -->
@@ -43,7 +62,7 @@
       class=".rssview.RSSView"
       template="rssview.pt"
       allowed_interface=".rssview.IRSSView"
-      permission="zope.Public"
+      permission="zope2.View"
       />
 
 
@@ -53,7 +72,7 @@
       class=".atomview.AtomView"
       template="atomview.pt"
       allowed_interface=".atomview.IAtomView"
-      permission="zope.Public"
+      permission="zope2.View"
       />
 
 

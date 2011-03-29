@@ -1,0 +1,53 @@
+<tal:results tal:define="results view/get_search_results">
+    <h2 class="documentFirstHeading">
+        <span i18n:translate="heading_search_results">
+            Search results
+        </span>
+        <!--span class="discreet">
+        &mdash;
+        <span i18n:translate="batch_x_items_matching_your_criteria"
+        ><span i18n:name="number"
+        tal:omit-tag=""
+        tal:content="python:len(results)">234</span> items matching your search terms</span>
+      </span-->
+    </h2>
+    <div tal:condition="not: results">
+        <p><strong i18n:translate="description_no_results_found">No results were found.</strong></p>
+    </div>
+    <div tal:condition="results">
+
+        <dl class="searchResults">
+            <tal:loop repeat="result results">
+                <dt>
+                   <a
+                     href="#"
+                     tal:attributes="href result/link"
+                     tal:content="result/title" />
+                </dt>
+                <dd tal:define="is_html python:view.is_html(result)">
+                    <span tal:replace="structure result/summary" tal:condition="is_html" />
+                    <span tal:replace="result/summary" tal:condition="not: is_html" />
+                    <!--span tal:replace="python:plone_view.cropText(result['summary'], desc_length, desc_ellipsis)">
+                        Cropped description
+                    </span-->
+                    <span class="documentByLine">
+                        <span tal:define="tags result/tags|nothing"
+                              tal:condition="tags">
+                            &mdash;
+                            <tal:filedunder i18n:translate="label_filed_under">Filed under:</tal:filedunder>
+                                <span tal:repeat="tag tags">
+                                    <a href=""
+                                       class="link-tag"
+                                       rel="tag"
+                                       tal:content="python:tag['label'] or tag['term']"
+                                       tal:attributes="href tag/scheme|nothing">
+                                       Tag
+                                    </a><tal:separator condition="not: repeat/tag/end">,</tal:separator>
+                                </span>
+                        </span>
+                    </span>
+                </dd>
+            </tal:loop>
+        </dl>
+    </div>
+</tal:results>

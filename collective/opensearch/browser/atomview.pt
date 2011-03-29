@@ -21,11 +21,11 @@
         tal:attributes="searchTerms view/searchterm; startIndex view/start"/>
     <link rel="alternate"
         href="http://example.com/New+York+History?pw=3"
-        tal:attributes="href string:${view/portal_url}/search?SearchableText=${view/searchterm_url}&amp;b_start=${view/start}"
+        tal:attributes="href string:${here/portal_url}/search?SearchableText=${view/searchterm_url}&amp;b_start=${view/start}"
         type="text/html"/>
     <link rel="self"
         href="http://example.com/New+York+History?pw=3&amp;format=atom"
-        tal:attributes="href string:${view/portal_url}/opensearch_atom.xml?${view/searchterm_url}&amp;b_start=${view/start}"
+        tal:attributes="href string:${here/portal_url}/opensearch_atom.xml?${view/searchterm_url}&amp;b_start=${view/start}"
         type="application/atom+xml"/>
     <link rel="search"
         type="application/opensearchdescription+xml"
@@ -34,7 +34,7 @@
     <entry tal:repeat="object view/search_results">
         <title tal:content="object/Title">New York History</title>
         <link rel="alternate" tal:attributes="href object/getURL"/>
-        <id tal:content="string:${view/portal_url}/resolveuid/${object/UID}">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+        <id tal:content="string:${here/portal_url}/resolveuid/${object/UID}">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
         <updated tal:content="python:(DateTime(object.modified).HTML4())">2003-12-13T18:30:02Z</updated>
         <summary type="text" tal:content="object/Description">
         ... Harlem.NYC - A virtual tour and information on
@@ -46,7 +46,7 @@
            <uri tal:content="author/uri">http://example.com/~johndoe</uri>
         </author>
         <tal:block tal:repeat="item object/Subject">
-            <category tal:attributes="term item; scheme string:${view/portal_url}/categories/Subject"/>
+            <category tal:attributes="term item; scheme string:${here/portal_url}/categories/Subject"/>
         </tal:block>
         <rights type="html" tal:content="object/Rights">
         &amp;copy; 2005 John Doe
