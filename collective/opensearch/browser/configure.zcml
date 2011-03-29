@@ -8,6 +8,25 @@
 
   <!-- -*- extra stuff goes here -*- -->
 
+  <browser:menuItem
+      title="Open Search View"
+      for="Products.ATContentTypes.interfaces.link.IATLink"
+      menu="plone_displayviews"
+      action="oslink_view"
+      description="Set OpenSearch view."
+      />
+
+  <browser:menuItem
+      title="Open Search View"
+      for="plone.app.folder.folder.IATUnifiedFolder"
+      menu="plone_displayviews"
+      action="osfolder_view"
+      description="View all open search links inside this folder as a meta search."
+      />
+
+
+
+
   <browser:page
       for="plone.app.folder.folder.IATUnifiedFolder"
       name="osfolder_view"

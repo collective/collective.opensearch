@@ -1,11 +1,15 @@
 Changelog
 =========
 
-1.0 (xxxx-xx-xx)
+1.0 (2011/03/29)
 ----------------
 
 - Created recipe with ZopeSkel
-  [""]
+- implement all functionality from PLOS and JaoP
+- add opensearch view for link
+- add opensearch view for folder, all opensearch links inside that folder
+    act as a metasearch
+  ["nan"]
 
 
 JaoP  0.1 (Sep 23, 2008)

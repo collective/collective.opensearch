@@ -3,8 +3,8 @@
 Project Description
 ===================
 
-collective.opensearch adds the possibility to add OpenSearch compatible
-search results to your Plone site.
+collective.opensearch adds the possibility to read and write OpenSearch
+compatible search results in your Plone site.
 
 OpenSearch is a collection of simple formats for the sharing of search results.
 
@@ -22,15 +22,17 @@ your plone site by formatting them in the RSS or Atom formats,
 augmented with OpenSearch response elements.
 
 collective.opensearch adds a view to the link type that lets you search
-OpenSearch (or other searches that return RSS or Atom so any plone Site)
-compatible search providers within your site. when you add a link with an
+OpenSearch (or other searches that return RSS or Atom so any plone site)
+compatible search providers within your site. When you add a link with an
 open search url this view will be automatically set.
 
 To search e.g. plone.org from your site add a search feed with the url: ::
 
     http://plone.org/search_rss?SearchableText={searchTerms}
 
-
+You can combine several open search links as a metasearch. All OpenSearch links
+inside a folder will be queried and their results displayed when you change
+the view of a folder to 'Open Search View'
 
 - Code repository: http://svn.plone.org/svn/collective/collective.opensearch/
 - Questions and comments to product-developers@lists.plone.org
