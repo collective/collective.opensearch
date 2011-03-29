@@ -50,8 +50,9 @@
                              tal:attributes="href result/link"
                              tal:content="result/title" />
                         </dt>
-                        <dd>
-                            <span tal:replace="result/summary" />
+                        <dd tal:define="is_html python:view.is_html(result)">
+                            <span tal:replace="structure result/summary" tal:condition="is_html" />
+                            <span tal:replace="result/summary" tal:condition="not: is_html" />
                             <!--span tal:replace="python:plone_view.cropText(result['summary'], desc_length, desc_ellipsis)">
                                 Cropped description
                             </span-->
