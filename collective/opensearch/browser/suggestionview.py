@@ -43,7 +43,7 @@ class SuggestionView(BrowserView):
         registry = getUtility(IRegistry)
         try:
             settings = registry.forInterface(IOpenSearchSettings)
-            self.limit = setting.suggestion_limit
+            self.limit = settings.suggestion_limit
         except (KeyError, AttributeError):
             pass
 
@@ -63,9 +63,9 @@ class SuggestionView(BrowserView):
         searchterm = form.get('command', '')
         if ( searchterm == '*' ):
             searchterm = ''
-        json_results = [searchterm, ]
+        json_results = [searchterm,]
         if searchterm:
             searchterm += '*'
-        search_results = self.portal_catalog(Title = searchterm, sort_limit=self.limit)[:self.limit]
-        json_results += [result.Title for result in search_results]
+            search_results = self.portal_catalog(Title = searchterm, sort_limit=self.limit)[:self.limit]
+            json_results.append([result.Title for result in search_results])
         return json.dumps(json_results)

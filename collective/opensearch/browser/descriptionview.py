@@ -30,6 +30,8 @@ class DescriptionView(BrowserView):
         registry = getUtility(IRegistry)
         self.settings = registry.forInterface(IOpenSearchSettings)
 
+    def get_example(self):
+         return self.settings.example
 
     def get_title(self):
         return self.settings.short_name

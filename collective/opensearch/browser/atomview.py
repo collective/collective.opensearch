@@ -15,6 +15,7 @@ class AtomView(BaseView):
     """
     implements(IAtomView)
     render = ViewPageTemplateFile('atomview.pt')
+    _type="application/atom+xml"
 
 
     def __call__(self):

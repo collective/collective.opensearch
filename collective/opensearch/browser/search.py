@@ -12,6 +12,7 @@
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
+########################################################################
 # module version of:
 # Script (Python) "queryCatalog"
 # use search.query_catalog instead of the script
@@ -22,8 +23,8 @@
 ##bind subpath=traverse_subpath
 ##parameters=
 # request=None,
-# show_all=0,
-# quote_logic=0,
+# show_all=False,
+# quote_logic=False,
 # quote_logic_indexes=['SearchableText','Description','Title'],
 # use_types_blacklist=False,
 # show_inactive=False,

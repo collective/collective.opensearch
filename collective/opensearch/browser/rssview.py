@@ -14,6 +14,7 @@ class RSSView(BaseView):
     """
     implements(IRSSView)
     render = ViewPageTemplateFile('rssview.pt')
+    _type="application/rss+xml"
 
 
     def __call__(self):

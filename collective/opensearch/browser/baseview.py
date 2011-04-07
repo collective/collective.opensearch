@@ -31,14 +31,121 @@ class BaseView(BrowserView):
     total_results = 0
     uid = ''
     version = '1.0'
+    _type = None
+    _params = ''
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
         registry = getUtility(IRegistry)
         self.settings = registry.forInterface(IOpenSearchSettings)
-        QI = getToolByName(context, 'portal_quickinstaller')
-        self.version=QI.getProductVersion('collective.opensearch')
+        portal_qi = getToolByName(context, 'portal_quickinstaller')
+        self.version=portal_qi.getProductVersion('collective.opensearch')
+
+    def _get_params(self):
+        indexes=self.portal_catalog.indexes()
+        sorts = ['sort_on', 'sort_order', 'sort_limit']
+        form = self.request.form
+        params = {}
+        for k in form.keys():
+            if k in indexes + sorts:
+                params[k]=form[k]
+        # XXX this is ugly. find out if is there a function in zope like
+        # urllib.urlencode(params) for a plone compatible output
+        # i.e. that will be parsed corretly into request.form
+        param_str='?'
+        for k,v in params.iteritems():
+            if type(v)==list:
+                for item in v:
+                    param_str += k + '=' + urllib.quote_plus(str(item)) +'&'
+            else:
+                param_str += k + '=' + urllib.quote_plus(str(v)) + '&'
+        return param_str
+
+
+
+
+    def _alternate_link(self):
+        params = self._params + 'b_start=%d&b_size=%d' % (self.start,
+                                                    self.max_items)
+        return {'href': '%s/search%s' % (self.portal_url(), params ),
+                'rel': 'alternate',
+                'type': 'text/html'
+                }
+
+    def _self_link(self):
+        params = self._params + 'b_start=%d&b_size=%d' % (self.start,
+                                                    self.max_items)
+        url = self.context.absolute_url() + '/' + self.__name__
+        return {'href': url + params,
+                'rel': 'self',
+                'type': self._type,
+                }
+
+    def _first_link(self):
+        if self.start > 0:
+            params = self._params + 'b_start=0&b_size=%d' % self.max_items
+            url = self.context.absolute_url() + '/' + self.__name__
+            return {'href': url + params,
+                    'rel': 'first',
+                    'type': self._type,
+                    }
+
+
+    def _last_link(self):
+        last = (self.total_results / self.max_items) * self.max_items
+        if self.start + self.max_items < self.total_results:
+            params = self._params + 'b_start=%d&b_size=%d' % (last,
+                                                        self.max_items)
+            url = self.context.absolute_url() + '/' + self.__name__
+            return {'href': url + params,
+                    'rel': 'last',
+                    'type': self._type,
+                    }
+
+
+    def _next_link(self):
+        next = self.start + self.max_items
+        url = self.context.absolute_url() + '/' + self.__name__
+        if next < self.total_results:
+            params = self._params + 'b_start=%d&b_size=%d' % (next,
+                                                    self.max_items)
+            return {'href': url + params,
+                'rel': 'next',
+                'type': self._type,
+                }
+
+
+    def _previous_link(self):
+        prev = self.start - self.max_items
+        url = self.context.absolute_url() + '/' + self.__name__
+        if self.start > 0:
+            params = self._params + 'b_start=%d&b_size=%d' % (prev,
+                                                    self.max_items)
+            return {'href': url + params,
+                'rel': 'previous',
+                'type': self._type,
+                }
+
+
+    def _search_link(self):
+        return {'href': '%s/opensearch_description.xml' % self.portal_url(),
+            'rel': 'search',
+            'type': 'application/opensearchdescription+xml'}
+
+    @property
+    def portal_catalog(self):
+        return getToolByName(self.context, 'portal_catalog')
+
+    def links(self):
+        return [self._alternate_link(),
+                self._self_link(),
+                self._first_link(),
+                self._last_link(),
+                self._next_link(),
+                self._previous_link(),
+                self._search_link()]
+
 
 
     def get_author_info(self, creator):
@@ -65,22 +172,16 @@ class BaseView(BrowserView):
     def __call__(self):
         self.searchterm = self.request.get('SearchableText','')
         self.searchterm_url = urllib.quote_plus(self.searchterm)
-        #start count and end must be positive integers
+        # start, count and end must be positive integers
         try:
             self.start = abs(int(self.request.get('b_start', 0)))
         except ValueError:
             self.start = 0
         try:
-            self.max_items = abs(int(self.request.get('count', 20)))
+            self.max_items = abs(int(self.request.get('b_size', 20)))
         except ValueError:
             self.max_items=20
-        try:
-            self.end = abs(int(self.request.get('b_end',
-                            self.start + self.max_items)))
-        except ValueError:
-            self.end = self.start + self.max_items
-        if self.end < self.start:
-            self.end = self.start
+        self.end = self.start + self.max_items
         if IReferenceable.providedBy(self.context):
             self.uid = self.portal_url + '/resolveuid/' + self.context.UID()
         else:
@@ -90,6 +191,7 @@ class BaseView(BrowserView):
                                     use_types_blacklist=True)
         self.search_results = search_results[self.start:self.end]
         self.total_results = len(search_results)
+        self._params = self._get_params()
         return self.render()
 
 

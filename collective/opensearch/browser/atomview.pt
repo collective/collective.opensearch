@@ -19,18 +19,12 @@
     <opensearch:itemsPerPage tal:content="view/max_items">10</opensearch:itemsPerPage>
     <opensearch:Query role="request" searchTerms="New York History" startIndex="0"
         tal:attributes="searchTerms view/searchterm; startIndex view/start"/>
-    <link rel="alternate"
-        href="http://example.com/New+York+History?pw=3"
-        tal:attributes="href string:${here/portal_url}/search?SearchableText=${view/searchterm_url}&amp;b_start=${view/start}"
-        type="text/html"/>
-    <link rel="self"
-        href="http://example.com/New+York+History?pw=3&amp;format=atom"
-        tal:attributes="href string:${here/portal_url}/opensearch_atom.xml?${view/searchterm_url}&amp;b_start=${view/start}"
-        type="application/atom+xml"/>
-    <link rel="search"
-        type="application/opensearchdescription+xml"
-        href="http://example.com/opensearchdescription.xml"
-        tal:attributes="href string:${here/portal_url}/opensearch_description.xml"/>
+    <tal:links tal:repeat="link view/links">
+        <link tal:attributes="rel link/rel;
+                            href link/href;
+                            type link/type"
+            tal:condition="link"/>
+    </tal:links>
     <entry tal:repeat="object view/search_results">
         <title tal:content="object/Title">New York History</title>
         <link rel="alternate" tal:attributes="href object/getURL"/>
