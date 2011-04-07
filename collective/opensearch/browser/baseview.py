@@ -1,4 +1,5 @@
 import urllib
+import ZTUtils
 from zope.component import getUtility
 
 from Products.Five import BrowserView
@@ -33,6 +34,7 @@ class BaseView(BrowserView):
     version = '1.0'
     _type = None
     _params = ''
+    url = ''
 
     def __init__(self, context, request):
         self.context = context
@@ -41,52 +43,46 @@ class BaseView(BrowserView):
         self.settings = registry.forInterface(IOpenSearchSettings)
         portal_qi = getToolByName(context, 'portal_quickinstaller')
         self.version=portal_qi.getProductVersion('collective.opensearch')
+        self.url = self.context.absolute_url() + '/' + self.__name__ + '?'
 
     def _get_params(self):
         indexes=self.portal_catalog.indexes()
         sorts = ['sort_on', 'sort_order', 'sort_limit']
         form = self.request.form
         params = {}
-        for k in form.keys():
+        for k,v in form.iteritems():
             if k in indexes + sorts:
-                params[k]=form[k]
-        # XXX this is ugly. find out if is there a function in zope like
-        # urllib.urlencode(params) for a plone compatible output
-        # i.e. that will be parsed corretly into request.form
-        param_str='?'
-        for k,v in params.iteritems():
-            if type(v)==list:
-                for item in v:
-                    param_str += k + '=' + urllib.quote_plus(str(item)) +'&'
-            else:
-                param_str += k + '=' + urllib.quote_plus(str(v)) + '&'
-        return param_str
+                if v:
+                    params[k]=v
+            elif k.endswith('_usage'):
+                if  k[:-6] in indexes:
+                    if v and form.get(k[:-6], False):
+                        params[k]=v
+        return ZTUtils.make_query(params)
 
 
 
 
     def _alternate_link(self):
-        params = self._params + 'b_start=%d&b_size=%d' % (self.start,
+        params = self._params + '&b_start=%d&b_size=%d' % (self.start,
                                                     self.max_items)
-        return {'href': '%s/search%s' % (self.portal_url(), params ),
+        return {'href': '%s/search?%s' % (self.portal_url(), params ),
                 'rel': 'alternate',
                 'type': 'text/html'
                 }
 
     def _self_link(self):
-        params = self._params + 'b_start=%d&b_size=%d' % (self.start,
+        params = self._params + '&b_start=%d&b_size=%d' % (self.start,
                                                     self.max_items)
-        url = self.context.absolute_url() + '/' + self.__name__
-        return {'href': url + params,
+        return {'href': self.url + params,
                 'rel': 'self',
                 'type': self._type,
                 }
 
     def _first_link(self):
         if self.start > 0:
-            params = self._params + 'b_start=0&b_size=%d' % self.max_items
-            url = self.context.absolute_url() + '/' + self.__name__
-            return {'href': url + params,
+            params = self._params + '&b_start=0&b_size=%d' % self.max_items
+            return {'href': self.url + params,
                     'rel': 'first',
                     'type': self._type,
                     }
@@ -95,10 +91,9 @@ class BaseView(BrowserView):
     def _last_link(self):
         last = (self.total_results / self.max_items) * self.max_items
         if self.start + self.max_items < self.total_results:
-            params = self._params + 'b_start=%d&b_size=%d' % (last,
+            params = self._params + '&b_start=%d&b_size=%d' % (last,
                                                         self.max_items)
-            url = self.context.absolute_url() + '/' + self.__name__
-            return {'href': url + params,
+            return {'href': self.url + params,
                     'rel': 'last',
                     'type': self._type,
                     }
@@ -106,11 +101,10 @@ class BaseView(BrowserView):
 
     def _next_link(self):
         next = self.start + self.max_items
-        url = self.context.absolute_url() + '/' + self.__name__
         if next < self.total_results:
-            params = self._params + 'b_start=%d&b_size=%d' % (next,
+            params = self._params + '&b_start=%d&b_size=%d' % (next,
                                                     self.max_items)
-            return {'href': url + params,
+            return {'href': self.url + params,
                 'rel': 'next',
                 'type': self._type,
                 }
@@ -118,11 +112,10 @@ class BaseView(BrowserView):
 
     def _previous_link(self):
         prev = self.start - self.max_items
-        url = self.context.absolute_url() + '/' + self.__name__
         if self.start > 0:
-            params = self._params + 'b_start=%d&b_size=%d' % (prev,
+            params = self._params + '&b_start=%d&b_size=%d' % (prev,
                                                     self.max_items)
-            return {'href': url + params,
+            return {'href': self.url + params,
                 'rel': 'previous',
                 'type': self._type,
                 }
