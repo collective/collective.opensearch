@@ -46,6 +46,8 @@
         &amp;copy; 2005 John Doe
         </rights>
         <published tal:content="python:(DateTime(object.Date).HTML4())">2003-12-13T09:17:51-08:00</published>
+        <relevance:score tal:condition="object/data_record_normalized_score_"
+                        tal:content="python:float(object.data_record_normalized_score_)/100">0.95</relevance:score>
         <dc:type tal:content="object/Type">Type</dc:type>
     </entry>
  </feed>
