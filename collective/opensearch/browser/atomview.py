@@ -19,7 +19,7 @@ class AtomView(BaseView):
 
 
     def __call__(self):
-        self.request.RESPONSE.setHeader('Content-Type','text/xml; charset=utf-8')
+        self.request.RESPONSE.setHeader('Content-Type','application/atom+xml; charset=utf-8')
         return super(AtomView, self).__call__()
 
 

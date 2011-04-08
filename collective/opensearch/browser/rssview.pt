@@ -48,7 +48,6 @@
        <author tal:content="object/Creator">Creator</author>
        <relevance:score tal:condition="object/data_record_normalized_score_"
                         tal:content="python:float(object.data_record_normalized_score_)/100">0.95</relevance:score>
-       <dc:publisher tal:content="object/Publisher">Publisher</dc:publisher>
        <dc:rights tal:content="object/Rights">Rights</dc:rights>
        <dc:type tal:content="object/Type">Type</dc:type>
      </item>

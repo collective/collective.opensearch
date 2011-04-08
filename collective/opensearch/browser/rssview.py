@@ -18,7 +18,7 @@ class RSSView(BaseView):
 
 
     def __call__(self):
-        self.request.RESPONSE.setHeader('Content-Type','text/xml; charset=utf-8')
+        self.request.RESPONSE.setHeader('Content-Type','application/rss+xml; charset=utf-8')
         return super(RSSView, self).__call__()
 
 
