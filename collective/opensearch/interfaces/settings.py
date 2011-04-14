@@ -25,36 +25,50 @@ class IOpenSearchSettings(Interface):
     """
 
     short_name = schema.TextLine(title=_(u'Title'),
-                     description=_(u'A short name for your Open Search widget. Limited to 16 characters'),
-                     max_length=16,
-                     min_length=2,
-                     required=True,
-                     default=u'Search Site',)
+        description=_(u'A short name for your Open Search widget. Limited to 16 characters'),
+        max_length=16,
+        min_length=2,
+        required=True,
+        default=u'Search Site',)
 
     description = schema.Text(title=_(u'Description'),
-                       description=_(u'A human-readable description of the'
-                                     'search engine. Limited to 1024 characters'),
-                       max_length=1024,
-                       min_length=2,
-                       required=True,
-                       default=u'Search this site using open search ...',)
+        description=_(u'A human-readable description of the'
+                     'search engine. Limited to 1024 characters'),
+        max_length=1024,
+        min_length=2,
+        required=True,
+        default=u'Search this site using open search ...',)
 
     tags = schema.TextLine(title=_(u'Tags'),
-                description=_(u'A set of words that are used as keywords to identify and categorize this search content delimited by the space character. '),
-                required=False,
-                max_length=256,
-                default=u'',)
+        description=_(u'A set of words that are used as keywords to identify and categorize this search content delimited by the space character. '),
+        required=False,
+        max_length=256,
+        default=u'',)
 
     contact = schema.TextLine(title=_(u'Contact'),
-                       description=_(u'An email address of someone to contact.'),
-                       required=False,
-                       default=u'',)
+        description=_(u'An email address of someone to contact.'),
+        required=False,
+        default=u'',)
 
     suggestion_limit = schema.Int(title=_(u'Suggestions'),
-                       description=_(u'Number of suggestions to be returned to the browser (0 turns suggestions off).'),
-                       required=True,
-                       min = 0,
-                       max = 100,
-                       default=5,)
+        description=_(u'Number of suggestions to be returned to the browser (0 turns suggestions off).'),
+        required=True,
+        min = 0,
+        max = 100,
+        default=5,)
 
+    example = schema.TextLine(title=_(u'Example'),
+        description=_(u'''OpenSearch description documents
+        should include at least one Query element of type="example"
+        that is expected to return search results.
+        Search clients may use this example query to
+        validate that the search engine is working properly.'''),
+        required=True,
+        default=u'None',)
 
+    category_indexes = schema.List(
+        title=_(u"Category Indexes"),
+        description=_(u"Select the indexes to use as categories"),
+        default=['Subject'],
+        value_type=schema.Choice(vocabulary='collective.opensearch.indexes'),
+        required=True)

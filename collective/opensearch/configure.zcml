@@ -34,4 +34,9 @@
   />
 
 
+  <utility
+     name="collective.opensearch.indexes"
+     component=".vocabularies.IndexesVocabularyFactory"
+     />
+
 </configure>

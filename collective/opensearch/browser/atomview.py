@@ -1,6 +1,16 @@
 from zope.interface import implements, Interface
+from DateTime import DateTime
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from baseview import BaseView
+from baseview import BaseView, BaseEntry
+
+class AtomEntry(BaseEntry):
+
+    def updated(self):
+        return DateTime(self.brain.modified).HTML4()
+
+    def published(self):
+        return DateTime(self.brain.Date).HTML4()
+
 
 class IAtomView(Interface):
     """
@@ -16,7 +26,10 @@ class AtomView(BaseView):
     implements(IAtomView)
     render = ViewPageTemplateFile('atomview.pt')
     _type="application/atom+xml"
+    LinkEntry = AtomEntry
 
+    def updated(self):
+        return DateTime().HTML4()
 
     def __call__(self):
         self.request.RESPONSE.setHeader('Content-Type','application/atom+xml; charset=utf-8')

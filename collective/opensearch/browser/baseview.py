@@ -18,13 +18,15 @@ def not_implemented(*args, **kwargs):
     raise NotImplementedError
 
 
-class LinkEntry(object):
+class BaseEntry(object):
 
     def __init__(self, context, brain):
         self.context = context
         self.brain=brain
         self.portal_membership = getToolByName(self.context, 'portal_membership')
         self.portal_url = getToolByName(self.context, 'portal_url')()
+        registry = getUtility(IRegistry)
+        self.settings = registry.forInterface(IOpenSearchSettings)
 
     def get_author_info(self, creator):
         author = self.portal_membership.getMemberInfo(creator)
@@ -50,23 +52,16 @@ class LinkEntry(object):
     def summary(self):
         return self.brain.Description
 
-    def updated(self):
-        return DateTime(self.brain.modified).HTML4()
-
-    def published(self):
-        return DateTime(self.brain.Date).HTML4()
-
-    def pub_date(self):
-        return DateTime(self.brain.Date).rfc822()
-
     def author(self):
         return self.get_author_info(self.brain.Creator)
 
     def categories(self):
-        scheme_url=self.portal_url + "/search?Subject:list="
-        for subject in self.brain.Subject:
-            yield( {'term': subject,
-                    'scheme': scheme_url})
+        for cat in self.settings.category_indexes:
+            scheme_url="%s/search?%s:list=" %( self.portal_url, cat)
+            if getattr(self.brain, cat, None):
+                for subject in getattr(self.brain, cat):
+                    yield( {'term': subject,
+                            'scheme': scheme_url})
 
     def relevance_score(self):
         if self.brain.data_record_normalized_score_:
@@ -93,6 +88,8 @@ class BaseView(BrowserView):
     _type = None
     _params = ''
     url = ''
+    LinkEntry = BaseEntry
+
 
     def __init__(self, context, request):
         self.context = context
@@ -195,7 +192,7 @@ class BaseView(BrowserView):
 
     def _get_search_results(self, results):
         for result in results:
-            yield(LinkEntry(self.context, result))
+            yield(self.LinkEntry(self.context, result))
 
 
     def portal_url(self):

@@ -8,7 +8,7 @@
        i18n:domain="plone"
        xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/">
     <title tal:content="string:${view/feed_title}: ${view/searchterm}">Example.com Search: New York history</title>
-    <updated tal:content="python: DateTime().HTML4()">2003-12-13T18:30:02Z</updated>
+    <updated tal:content="view/updated">2003-12-13T18:30:02Z</updated>
     <id tal:content="view/uid">urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
     <generator uri="http://plone.org/products/plos" version="1.0"
         tal:attributes="version view/version">collective.opensearch</generator>
