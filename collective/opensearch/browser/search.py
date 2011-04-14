@@ -90,16 +90,13 @@ def rootAtNavigationRoot(query, context):
         query['path'] = getNavigationRoot(context)
 
 
-
-def query_catalog(context, request, show_all=False, quote_logic=False,
-                    quote_logic_indexes=['SearchableText','Description','Title'],
-                    use_types_blacklist=False,show_inactive=False,
-                    use_navigation_root=False):
+def build_query(context, request, show_all=False, quote_logic=False,
+                quote_logic_indexes=['SearchableText','Description','Title'],):
+    show_query = show_all
     results=[]
     catalog=getToolByName(context, 'portal_catalog')
     indexes=catalog.indexes()
     query={}
-    show_query=show_all
     second_pass = {}
 
     # See http://dev.plone.org/plone/ticket/9422 for
@@ -119,7 +116,7 @@ def query_catalog(context, request, show_all=False, quote_logic=False,
                 if quote_logic:
                     v = quotequery(v)
             query[k] = v
-            show_query = 1
+            show_query = True
         elif k.endswith('_usage'):
             key = k[:-6]
             param, value = v.split(':')
@@ -137,9 +134,15 @@ def query_catalog(context, request, show_all=False, quote_logic=False,
         query[k] = q = {'query':qs}
         q.update(v)
 
+    return query, show_query
+
+def get_query_results(context, query, show_query=False, use_types_blacklist=False,
+                        show_inactive=False, use_navigation_root=False):
     # doesn't normal call catalog unless some field has been queried
     # against. if you want to call the catalog _regardless_ of whether
     # any items were found, then you can pass show_all=True.
+    results=[]
+    catalog=getToolByName(context, 'portal_catalog')
     if show_query:
         try:
             if use_types_blacklist:
@@ -152,3 +155,15 @@ def query_catalog(context, request, show_all=False, quote_logic=False,
             pass
 
     return results
+
+
+def query_catalog(context, request, show_all=False, quote_logic=False,
+                    quote_logic_indexes=['SearchableText','Description','Title'],
+                    use_types_blacklist=False,show_inactive=False,
+                    use_navigation_root=False):
+
+    query, show_query = build_query(context, request, show_all, quote_logic, quote_logic_indexes)
+
+    return get_query_results(context, query, show_query, use_types_blacklist,
+                            show_inactive, use_navigation_root)
+

@@ -1,5 +1,6 @@
 import urllib
 import ZTUtils
+from DateTime import DateTime
 from zope.component import getUtility
 
 from Products.Five import BrowserView
@@ -16,6 +17,63 @@ from collective.opensearch.browser import search
 def not_implemented(*args, **kwargs):
     raise NotImplementedError
 
+
+class LinkEntry(object):
+
+    def __init__(self, context, brain):
+        self.context = context
+        self.brain=brain
+        self.portal_membership = getToolByName(self.context, 'portal_membership')
+        self.portal_url = getToolByName(self.context, 'portal_url')()
+
+    def get_author_info(self, creator):
+        author = self.portal_membership.getMemberInfo(creator)
+        ad = {'name': creator,
+              'uri': self.portal_url + '/author/' + creator}
+        if author:
+            if author['fullname']:
+                ad['name'] = author['fullname']
+            if author['home_page']:
+                ad['uri'] = author['home_page']
+        return ad
+
+
+    def get_title(self):
+        return self.brain.Title
+
+    def get_uid(self):
+        return self.portal_url + '/resolveuid/' + self.brain.UID
+
+    def url(self):
+        return self.brain.getURL()
+
+    def summary(self):
+        return self.brain.Description
+
+    def updated(self):
+        return DateTime(self.brain.modified).HTML4()
+
+    def published(self):
+        return DateTime(self.brain.Date).HTML4()
+
+    def pub_date(self):
+        return DateTime(self.brain.Date).rfc822()
+
+    def author(self):
+        return self.get_author_info(self.brain.Creator)
+
+    def categories(self):
+        scheme_url=self.portal_url + "/search?Subject:list="
+        for subject in self.brain.Subject:
+            yield( {'term': subject,
+                    'scheme': scheme_url})
+
+    def relevance_score(self):
+        if self.brain.data_record_normalized_score_:
+            return float(self.brain.data_record_normalized_score_)/100.0
+
+    def get_type(self):
+        return self.brain.Type
 
 class BaseView(BrowserView):
     """
@@ -135,20 +193,10 @@ class BaseView(BrowserView):
                 self._search_link()]
 
 
+    def _get_search_results(self, results):
+        for result in results:
+            yield(LinkEntry(self.context, result))
 
-    def get_author_info(self, creator):
-        author = self.portal_membership().getMemberInfo(creator)
-        ad = {'name': creator,
-              'uri': self.portal_url() + '/author/' + creator}
-        if author:
-            if author['fullname']:
-                ad['name'] = author['fullname']
-            if author['home_page']:
-                ad['uri'] = author['home_page']
-        return ad
-
-    def portal_membership(self):
-        return getToolByName(self.context, 'portal_membership')
 
     def portal_url(self):
         return getToolByName(self.context, 'portal_url')()
@@ -177,7 +225,7 @@ class BaseView(BrowserView):
 
         search_results = search.query_catalog(self.context, self.request,
                                     use_types_blacklist=True)
-        self.search_results = search_results[self.start:self.end]
+        self.search_results = self._get_search_results(search_results[self.start:self.end])
         self.total_results = len(search_results)
         return self.render()
 

@@ -6,8 +6,7 @@
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
        i18n:domain="plone"
-       xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/"
-       tal:define="DateTime python:modules['DateTime'].DateTime;">
+       xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/">
     <title tal:content="string:${view/feed_title}: ${view/searchterm}">Example.com Search: New York history</title>
     <updated tal:content="python: DateTime().HTML4()">2003-12-13T18:30:02Z</updated>
     <id tal:content="view/uid">urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
@@ -26,28 +25,25 @@
             tal:condition="link"/>
     </tal:links>
     <entry tal:repeat="object view/search_results">
-        <title tal:content="object/Title">New York History</title>
-        <link rel="alternate" tal:attributes="href object/getURL"/>
-        <id tal:content="string:${here/portal_url}/resolveuid/${object/UID}">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
-        <updated tal:content="python:(DateTime(object.modified).HTML4())">2003-12-13T18:30:02Z</updated>
-        <summary type="text" tal:content="object/Description">
+        <title tal:content="object/get_title">New York History</title>
+        <link rel="alternate" tal:attributes="href object/url"/>
+        <id tal:content="object/get_uid">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+        <updated tal:content="object/updated">2003-12-13T18:30:02Z</updated>
+        <summary type="text" tal:content="object/summary">
         ... Harlem.NYC - A virtual tour and information on
         businesses ...  with historic photos of Columbia's own New York
         neighborhood ... Internet Resources for the City's History. ...
         </summary>
-        <author tal:define="author python:view.get_author_info(object.Creator)">
+        <author tal:define="author object/author">
            <name tal:content="author/name">John Doe</name>
            <uri tal:content="author/uri">http://example.com/~johndoe</uri>
         </author>
-        <tal:block tal:repeat="item object/Subject">
-            <category tal:attributes="term item; scheme string:${here/portal_url}/categories/Subject"/>
+        <tal:block tal:repeat="item object/categories">
+            <category tal:attributes="term item/term; scheme item/scheme"/>
         </tal:block>
-        <rights type="html" tal:content="object/Rights">
-        &amp;copy; 2005 John Doe
-        </rights>
-        <published tal:content="python:(DateTime(object.Date).HTML4())">2003-12-13T09:17:51-08:00</published>
-        <relevance:score tal:condition="object/data_record_normalized_score_"
-                        tal:content="python:float(object.data_record_normalized_score_)/100">0.95</relevance:score>
-        <dc:type tal:content="object/Type">Type</dc:type>
+        <published tal:content="object/published">2003-12-13T09:17:51-08:00</published>
+        <relevance:score tal:condition="object/relevance_score"
+                        tal:content="object/relevance_score">0.95</relevance:score>
+        <dc:type tal:content="object/get_type">Type</dc:type>
     </entry>
  </feed>

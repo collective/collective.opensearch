@@ -8,8 +8,7 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/"
       xmlns:relevance="http://a9.com/-/opensearch/extensions/relevance/1.0/"
       xmlns:atom="http://www.w3.org/2005/Atom">
-   <channel tal:define="DateTime python:modules['DateTime'].DateTime;">
-
+   <channel>
      <title tal:content="string:${view/feed_title}: ${view/searchterm}">Example.com Search: New York history</title>
      <link tal:content="string:${here/portal_url}/search?SearchableText=${view/searchterm_url}">http://example.com/search?SearchableText=New+York+history</link>
      <description i18n:translate="batch_x_items_matching_your_criteria">
@@ -30,26 +29,25 @@
      <opensearch:Query role="request" searchTerms="New York History" startIndex="1"
       tal:attributes="searchTerms view/searchterm; startIndex view/start"/>
      <item tal:repeat="object view/search_results">
-       <title tal:content="object/Title">New York History</title>
-       <link tal:content="object/getURL">http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html</link>
-       <description tal:content="object/Description">
+       <title tal:content="object/get_title">New York History</title>
+       <link tal:content="object/url">http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html</link>
+       <description tal:content="object/summary">
          ... Harlem.NYC - A virtual tour and information on
          businesses ...  with historic photos of Columbia's own New York
          neighborhood ... Internet Resources for the City's History. ...
        </description>
-       <pubDate tal:content="python: (DateTime(object.Date).rfc822())">Sat, 07 Sep 2002 0:00:01 GMT</pubDate>
+       <pubDate tal:content="object/pub_date">Sat, 07 Sep 2002 0:00:01 GMT</pubDate>
        <guid isPermaLink="true"
-            tal:content="string:${here/portal_url}/resolveuid/${object/UID}">http://inessential.com/2002/09/01.php#a2</guid>
-       <tal:block tal:repeat="item object/Subject">
+            tal:content="object/get_uid">http://inessential.com/2002/09/01.php#a2</guid>
+       <tal:block tal:repeat="item object/categories">
              <category domain="http://www.fool.com/cusips"
-                tal:attributes="domain string:${here/portal_url}/categories/Subject"
-                tal:content="item">MSFT</category>
+                tal:attributes="domain item/scheme"
+                tal:content="item/term">MSFT</category>
        </tal:block>
-       <author tal:content="object/Creator">Creator</author>
-       <relevance:score tal:condition="object/data_record_normalized_score_"
-                        tal:content="python:float(object.data_record_normalized_score_)/100">0.95</relevance:score>
-       <dc:rights tal:content="object/Rights">Rights</dc:rights>
-       <dc:type tal:content="object/Type">Type</dc:type>
+       <author tal:define="author object/author" tal:content="author/name">Creator</author>
+        <relevance:score tal:condition="object/relevance_score"
+                        tal:content="object/relevance_score">0.95</relevance:score>
+       <dc:type tal:content="object/get_type">Type</dc:type>
      </item>
    </channel>
  </rss>
