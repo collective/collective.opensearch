@@ -7,6 +7,9 @@ from Products.Five import BrowserView
 
 from Products.CMFCore.utils import getToolByName
 from Products.Archetypes.interfaces.referenceable import IReferenceable
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from Products.ATContentTypes.interfaces.topic import IATTopic
+
 from plone.registry.interfaces import IRegistry
 
 from collective.opensearch import opensearchMessageFactory as _
@@ -216,12 +219,20 @@ class BaseView(BrowserView):
             self.max_items=20
         self.end = self.start + self.max_items
         if IReferenceable.providedBy(self.context):
-            self.uid = self.portal_url + '/resolveuid/' + self.context.UID()
+            self.uid = self.portal_url() + '/resolveuid/' + self.context.UID()
         else:
             self.uid = self.context.absolute_url()
+        if IPloneSiteRoot.providedBy(self.context):
+            search_results = search.query_catalog(self.context, self.request,
+                                        use_types_blacklist=True)
+        elif IATTopic.providedBy(self.context):
+            q1 = self.context.buildQuery()
+            q2, show_query = search.build_query(self.context, self.request)
+            query = search.combine_queries(q1,q2)
+            search_results = search.get_query_results(self.context, query,
+                                    show_query=True, use_types_blacklist=True)
 
-        search_results = search.query_catalog(self.context, self.request,
-                                    use_types_blacklist=True)
+
         self.search_results = self._get_search_results(search_results[self.start:self.end])
         self.total_results = len(search_results)
         return self.render()

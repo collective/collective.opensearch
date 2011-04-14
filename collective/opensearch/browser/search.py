@@ -136,7 +136,22 @@ def build_query(context, request, show_all=False, quote_logic=False,
 
     return query, show_query
 
-def get_query_results(context, query, show_query=False, use_types_blacklist=False,
+def combine_queries(query_1, query_2):
+    query = {}
+    for k, v in query_1.iteritems():
+        if query_2.has_key(k):
+            #XXX this is the tricky bit
+            #TODO combine in an meaningfull way
+            #for now we just use the items of query_1 to override query_2
+            query[k] = v
+            query_2.pop(k)
+        else:
+            query[k] = v
+    for k, v in query_2.iteritems():
+        query[k] = v
+    return query
+
+def get_query_results(context, query, show_query, use_types_blacklist=False,
                         show_inactive=False, use_navigation_root=False):
     # doesn't normal call catalog unless some field has been queried
     # against. if you want to call the catalog _regardless_ of whether
