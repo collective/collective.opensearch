@@ -14,15 +14,21 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##################################################################################
+from zope.component import getUtility
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from plone.app.layout.viewlets import common as base
-from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
+
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from Products.ATContentTypes.interfaces.topic import IATTopic
+
 from collective.opensearch.interfaces.settings import IOpenSearchSettings
 
 class AutoDiscovery(base.ViewletBase):
     """ Viewlet for AutoDiscovery """
     settings = None
+    template = ViewPageTemplateFile('autodiscovery.pt')
 
     def __init__(self, context, request, view, manager):
         # Implement the ViewletBase
@@ -34,12 +40,16 @@ class AutoDiscovery(base.ViewletBase):
         except KeyError:
             pass
 
-
     def getTitle(self):
         try:
             return self.settings.short_name
         except (KeyError, AttributeError):
             return 'N/A'
 
+    def render(self):
+        if IPloneSiteRoot.providedBy(self.context) or IATTopic.providedBy(self.context):
+            return self.template()
+        else:
+            return ''
 
 

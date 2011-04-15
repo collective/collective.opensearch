@@ -129,7 +129,8 @@ class BaseView(BrowserView):
 
     def _alternate_link(self):
         params = self._get_params(self.start)
-        return {'href': '%s/search?%s' % (self.portal_url(), params ),
+        url = self.context.absolute_url() + '/opensearch_html.html?'
+        return {'href': url + params,
                 'rel': 'alternate',
                 'type': 'text/html'
                 }
@@ -181,7 +182,7 @@ class BaseView(BrowserView):
 
 
     def _search_link(self):
-        return {'href': '%s/opensearch_description.xml' % self.portal_url(),
+        return {'href': '%s/opensearch_description.xml' % self.context.absolute_url(),
             'rel': 'search',
             'type': 'application/opensearchdescription+xml'}
 

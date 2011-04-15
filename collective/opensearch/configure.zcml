@@ -27,11 +27,11 @@
   <include package=".browser" />
   <include package="plone.app.registry" />
 
-<subscriber
-  for="Products.ATContentTypes.interfaces.link.IATLink
+  <subscriber
+    for="Products.ATContentTypes.interfaces.link.IATLink
        Products.Archetypes.interfaces.IObjectInitializedEvent"
-  handler=".utils.set_view"
-  />
+    handler=".utils.set_view"
+    />
 
 
   <utility

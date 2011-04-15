@@ -118,7 +118,6 @@
      name="plone.htmlhead.opensearch.autodiscovery"
      manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
      class=".viewlets.AutoDiscovery"
-     template="autodiscovery.pt"
      permission="zope2.View"
      />
 

@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.0'
+version = '1.1'
 
 long_description = (
     read('README.txt')
@@ -17,7 +17,7 @@ long_description = (
     'Change history\n'
     '**************\n'
     + '\n' +
-    open(os.path.join("docs", "HISTORY.txt")).read()
+    read("docs", "HISTORY.txt")
     + '\n' +
     'Detailed Documentation\n'
     '**********************\n'

@@ -6,24 +6,12 @@
     <Description tal:content="view/get_description">Use Example.com to search the Web.</Description>
     <Tags tal:content="view/get_tags">water, life </Tags>
     <Contact tal:content="view/get_contact">admin@donotreply.com</Contact>
-    <Url type="application/rss+xml"
-        indexOffset="0"
-        template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=rss"
-        tal:attributes="template string:${here/portal_url}/opensearch_rss.xml?SearchableText={searchTerms}&amp;b_start:int={startIndex?}&amp;b_size:int={count?}" />
-    <Url type="application/atom+xml"
-        indexOffset="0"
-        template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=atom"
-        tal:attributes="template string:${here/portal_url}/opensearch_atom.xml?SearchableText={searchTerms}&amp;b_start:int={startIndex?}&amp;b_size:int={count?}" />
-    <Url type="text/html"
-        indexOffset="0"
-        tal:attributes="template string:${here/portal_url}/search?SearchableText={searchTerms}" />
-    <Url type="application/x-suggestions+json"
-        tal:condition="view/allow_suggestions"
-        tal:attributes="template string:${here/portal_url}/opensearch_suggestions?command={searchTerms}"/>
-    <Url type="application/opensearchdescription+xml"
-        rel="self"
-        template="http://www.foo.com/mysearchdescription.xml"
-        tal:attributes="template string:${here/portal_url}/opensearch_description.xml" />
+    <tal:loop tal:repeat="url view/get_urls">
+        <Url tal:attributes="type url/type;
+                indexOffset url/indexOffset;
+                template url/template;
+                rel url/rel" />
+    </tal:loop>
     <Query role="example" tal:attributes="searchTerms view/get_example" />
     <Image tal:content="string:${here/portal_url}/favicon.ico">http://example.com/favicon.ico</Image>
 
