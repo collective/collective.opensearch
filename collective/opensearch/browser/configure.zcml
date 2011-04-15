@@ -8,6 +8,16 @@
 
   <!-- -*- extra stuff goes here -*- -->
 
+  <browser:page
+      for="*"
+      name="opensearch_html.html"
+      class=".htmlview.HtmlView"
+      template="oslinkview.pt"
+      allowed_interface=".htmlview.IHtmlView"
+      permission="zope.Public"
+      />
+
+
   <browser:menuItem
       title="Open Search View"
       for="Products.ATContentTypes.interfaces.link.IATLink"

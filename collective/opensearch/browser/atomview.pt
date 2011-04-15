@@ -25,8 +25,8 @@
             tal:condition="link"/>
     </tal:links>
     <entry tal:repeat="object view/search_results">
-        <title tal:content="object/get_title">New York History</title>
-        <link rel="alternate" tal:attributes="href object/url"/>
+        <title tal:content="object/title">New York History</title>
+        <link rel="alternate" tal:attributes="href object/link"/>
         <id tal:content="object/get_uid">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
         <updated tal:content="object/updated">2003-12-13T18:30:02Z</updated>
         <summary type="text" tal:content="object/summary">
@@ -38,7 +38,7 @@
            <name tal:content="author/name">John Doe</name>
            <uri tal:content="author/uri">http://example.com/~johndoe</uri>
         </author>
-        <tal:block tal:repeat="item object/categories">
+        <tal:block tal:repeat="item object/tags">
             <category tal:attributes="term item/term; scheme item/scheme"/>
         </tal:block>
         <published tal:content="object/published">2003-12-13T09:17:51-08:00</published>

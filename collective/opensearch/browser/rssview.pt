@@ -29,8 +29,8 @@
      <opensearch:Query role="request" searchTerms="New York History" startIndex="1"
       tal:attributes="searchTerms view/searchterm; startIndex view/start"/>
      <item tal:repeat="object view/search_results">
-       <title tal:content="object/get_title">New York History</title>
-       <link tal:content="object/url">http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html</link>
+       <title tal:content="object/title">New York History</title>
+       <link tal:content="object/link">http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html</link>
        <description tal:content="object/summary">
          ... Harlem.NYC - A virtual tour and information on
          businesses ...  with historic photos of Columbia's own New York
@@ -39,7 +39,7 @@
        <pubDate tal:content="object/pub_date">Sat, 07 Sep 2002 0:00:01 GMT</pubDate>
        <guid isPermaLink="true"
             tal:content="object/get_uid">http://inessential.com/2002/09/01.php#a2</guid>
-       <tal:block tal:repeat="item object/categories">
+       <tal:block tal:repeat="item object/tags">
              <category domain="http://www.fool.com/cusips"
                 tal:attributes="domain item/scheme"
                 tal:content="item/term">MSFT</category>

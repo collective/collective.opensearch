@@ -61,7 +61,7 @@ class OsLinkView(BrowserView):
                 entry['summary_detail']['type'])
             return False
 
-    def get_search_results(self):
+    def search_results(self):
         url = self.context.getRemoteUrl()
         search_term = self.searchterm
         if not search_term:

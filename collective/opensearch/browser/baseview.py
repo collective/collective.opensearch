@@ -43,13 +43,13 @@ class BaseEntry(object):
         return ad
 
 
-    def get_title(self):
+    def title(self):
         return self.brain.Title
 
     def get_uid(self):
         return self.portal_url + '/resolveuid/' + self.brain.UID
 
-    def url(self):
+    def link(self):
         return self.brain.getURL()
 
     def summary(self):
@@ -58,13 +58,18 @@ class BaseEntry(object):
     def author(self):
         return self.get_author_info(self.brain.Creator)
 
-    def categories(self):
+    def tags(self):
+        taglist=[]
         for cat in self.settings.category_indexes:
             scheme_url="%s/search?%s:list=" %( self.portal_url, cat)
             if getattr(self.brain, cat, None):
                 for subject in getattr(self.brain, cat):
-                    yield( {'term': subject,
+                    scheme_url="%s/search?%s:list=%s" % (self.portal_url,
+                                                        cat, subject)
+                    taglist.append( {'term': subject,
+                            'label': subject,
                             'scheme': scheme_url})
+        return taglist
 
     def relevance_score(self):
         if self.brain.data_record_normalized_score_:
@@ -92,6 +97,7 @@ class BaseView(BrowserView):
     _params = ''
     url = ''
     LinkEntry = BaseEntry
+    query=None
 
 
     def __init__(self, context, request):
@@ -205,6 +211,22 @@ class BaseView(BrowserView):
         return self.settings.short_name
 
 
+    def combine_queries(self, query_base, query_supplemental):
+        query = {}
+        for k, v in query_base.iteritems():
+            if query_supplemental.has_key(k):
+                #XXX this is the tricky bit
+                #TODO combine in an meaningfull way
+                #for now we just use the items of query_1 to override query_2
+                query[k] = v
+                query_supplemental.pop(k)
+            else:
+                query[k] = v
+        for k, v in query_supplemental.iteritems():
+            query[k] = v
+        return query
+
+
     def __call__(self):
         self.searchterm = self.request.get('SearchableText','')
         self.searchterm_url = urllib.quote_plus(self.searchterm)
@@ -228,8 +250,8 @@ class BaseView(BrowserView):
         elif IATTopic.providedBy(self.context):
             q1 = self.context.buildQuery()
             q2, show_query = search.build_query(self.context, self.request)
-            query = search.combine_queries(q1,q2)
-            search_results = search.get_query_results(self.context, query,
+            self.query = self.combine_queries(q1,q2)
+            search_results = search.get_query_results(self.context, self.query,
                                     show_query=True, use_types_blacklist=True)
 
 
