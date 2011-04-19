@@ -23,8 +23,9 @@ def not_implemented(*args, **kwargs):
 
 class BaseEntry(object):
 
-    def __init__(self, context, brain):
+    def __init__(self, context, request, brain):
         self.context = context
+        self.request = request
         self.brain=brain
         self.portal_membership = getToolByName(self.context, 'portal_membership')
         self.portal_url = getToolByName(self.context, 'portal_url')()
@@ -64,7 +65,7 @@ class BaseEntry(object):
             scheme_url="%s/search?%s:list=" %( self.portal_url, cat)
             if getattr(self.brain, cat, None):
                 for subject in getattr(self.brain, cat):
-                    scheme_url="%s/search?%s:list=%s" % (self.portal_url,
+                    scheme_url="%s/search?%s%%3Alist=%s" % (self.portal_url,
                                                         cat, subject)
                     taglist.append( {'term': subject,
                             'label': subject,
@@ -202,7 +203,7 @@ class BaseView(BrowserView):
 
     def _get_search_results(self, results):
         for result in results:
-            yield(self.LinkEntry(self.context, result))
+            yield(self.LinkEntry(self.context, self.request, result))
 
 
     def portal_url(self):
@@ -212,23 +213,12 @@ class BaseView(BrowserView):
         return self.settings.short_name
 
 
-    def combine_queries(self, query_base, query_supplemental):
-        query = {}
-        for k, v in query_base.iteritems():
-            if query_supplemental.has_key(k):
-                #XXX this is the tricky bit
-                #TODO combine in an meaningfull way
-                #for now we just use the items of query_1 to override query_2
-                query[k] = v
-                query_supplemental.pop(k)
-            else:
-                query[k] = v
-        for k, v in query_supplemental.iteritems():
-            query[k] = v
-        return query
-
 
     def __call__(self):
+        if IReferenceable.providedBy(self.context):
+            self.uid = self.portal_url() + '/resolveuid/' + self.context.UID()
+        else:
+            self.uid = self.context.absolute_url()
         self.searchterm = self.request.get('SearchableText','')
         self.searchterm_url = urllib.quote_plus(self.searchterm)
         # start, count and end must be positive integers
@@ -241,20 +231,8 @@ class BaseView(BrowserView):
         except ValueError:
             self.max_items=20
         self.end = self.start + self.max_items
-        if IReferenceable.providedBy(self.context):
-            self.uid = self.portal_url() + '/resolveuid/' + self.context.UID()
-        else:
-            self.uid = self.context.absolute_url()
-        if IPloneSiteRoot.providedBy(self.context):
-            search_results = search.query_catalog(self.context, self.request,
-                                        use_types_blacklist=True)
-        elif IATTopic.providedBy(self.context):
-            q1 = self.context.buildQuery()
-            q2, show_query = search.build_query(self.context, self.request)
-            self.query = self.combine_queries(q1,q2)
-            search_results = search.get_query_results(self.context, self.query,
-                                    show_query=True, use_types_blacklist=True)
 
+        search_results = search.get_results(self.context, self.request)
 
         self.search_results = self._get_search_results(search_results[self.start:self.end])
         self.total_results = len(search_results)

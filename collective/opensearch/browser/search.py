@@ -37,6 +37,9 @@ from Products.ZCTextIndex.ParseTree import ParseError
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.browser.navtree import getNavigationRoot
 
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from Products.ATContentTypes.interfaces.topic import IATTopic
+
 def quotestring(s):
     return '"%s"' % s
 
@@ -167,4 +170,36 @@ def query_catalog(context, request, show_all=False, quote_logic=False,
 
     return get_query_results(context, query, show_query, use_types_blacklist,
                             show_inactive, use_navigation_root)
+
+
+
+def combine_queries(query_base, query_supplemental):
+    query = {}
+    for k, v in query_base.iteritems():
+        if query_supplemental.has_key(k):
+            #XXX this is the tricky bit
+            #TODO combine in an meaningfull way
+            #for now we just use the items of query_base to override query_supplemental
+            query[k] = v
+            query_supplemental.pop(k)
+        else:
+            query[k] = v
+    for k, v in query_supplemental.iteritems():
+        query[k] = v
+    return query
+
+
+def get_results(context, request):
+        search_results = []
+        if IPloneSiteRoot.providedBy(context):
+            search_results = query_catalog(context, request,
+                                        use_types_blacklist=True)
+        elif IATTopic.providedBy(context):
+            q1 = context.buildQuery()
+            q2, show_query = build_query(context,request)
+            query = combine_queries(q1,q2)
+            search_results = get_query_results(context, query,
+                                    show_query=True, use_types_blacklist=True)
+        return search_results
+
 
