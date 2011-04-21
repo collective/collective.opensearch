@@ -14,6 +14,7 @@
 #       MA 02110-1301, USA.
 
 import logging
+import urllib
 from zope.interface import implements, Interface
 
 from Products.Five import BrowserView
@@ -37,6 +38,7 @@ class OsLinkView(BrowserView):
     implements(IOsLinkView)
     searchterm = ''
     results_template = ViewPageTemplateFile('osresults.pt')
+    total_results = 0
 
     @property
     def searchterm(self):
@@ -63,11 +65,17 @@ class OsLinkView(BrowserView):
 
     def search_results(self):
         url = self.context.getRemoteUrl()
-        search_term = self.searchterm
+        search_term = urllib.quote_plus(self.searchterm)
         if not search_term:
                 return []
         qurl = url.replace('%7BsearchTerms%7D',search_term)
         results= feedparser.parse(qurl)
+        try:
+            self.total_results = int(results.feed.get('opensearch_totalresults','0'))
+            if self.total_results == 0:
+                self.total_results = int(results.feed.get('totalresults','0'))
+        except ValueError:
+            pass
         return results['entries']
 
 class OsLinkSnippet(OsLinkView):
