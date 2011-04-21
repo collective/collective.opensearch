@@ -94,7 +94,7 @@ class BaseView(BrowserView):
     total_results = 0
     uid = ''
     version = '1.0'
-    _type = None
+    _type = 'text'
     _params = ''
     url = ''
     LinkEntry = BaseEntry
@@ -236,6 +236,8 @@ class BaseView(BrowserView):
 
         self.search_results = self._get_search_results(search_results[self.start:self.end])
         self.total_results = len(search_results)
+        self.request.RESPONSE.setHeader('Content-Type',
+            '%s; charset=utf-8' % self._type)
         return self.render()
 
 

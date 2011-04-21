@@ -31,9 +31,6 @@ class AtomView(BaseView):
     def updated(self):
         return DateTime().HTML4()
 
-    def __call__(self):
-        self.request.RESPONSE.setHeader('Content-Type','application/atom+xml; charset=utf-8')
-        return super(AtomView, self).__call__()
 
 
 
