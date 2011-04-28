@@ -44,6 +44,10 @@ class OsLinkView(BrowserView):
     def searchterm(self):
         return self.request.form.get('SearchableText', '')
 
+    def has_searchterm(self):
+        url = self.context.getRemoteUrl()
+        return url.find('%7BsearchTerms%7D') > 0
+
 
     def display_results(self):
         return self.results_template()
@@ -66,9 +70,13 @@ class OsLinkView(BrowserView):
     def search_results(self):
         url = self.context.getRemoteUrl()
         search_term = urllib.quote_plus(self.searchterm)
-        if not search_term:
-                return []
-        qurl = url.replace('%7BsearchTerms%7D',search_term)
+        if self.has_searchterm():
+            if not search_term:
+                    return []
+            else:
+                qurl = url.replace('%7BsearchTerms%7D',search_term)
+        else:
+            qurl = url
         results= feedparser.parse(qurl)
         try:
             self.total_results = int(results.feed.get('opensearch_totalresults','0'))

@@ -9,6 +9,7 @@
                 <form name="opensearchform"
                       action="."
                       class="searchPage"
+                      tal:condition="view/has_searchterm"
                       tal:attributes="action string:${here/absolute_url}/@@oslink_view">
                     <input class="searchPage"
                            name="SearchableText"

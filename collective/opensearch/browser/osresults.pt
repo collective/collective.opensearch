@@ -1,5 +1,5 @@
 <tal:results tal:define="results view/search_results">
-    <h2 class="documentFirstHeading" i18n:domain="plone">
+    <h2 class="documentFirstHeading" i18n:domain="plone" tal:condition="view/has_searchterm">
         <span i18n:translate="heading_search_results">
             Search results
         </span>
