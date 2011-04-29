@@ -43,6 +43,9 @@ class BaseEntry(object):
                 ad['uri'] = author['home_page']
         return ad
 
+    def has_searchterm(self):
+        url = self.context.getRemoteUrl()
+        return url.find('%7BsearchTerms%7D') > 0
 
     def title(self):
         return self.brain.Title

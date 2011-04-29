@@ -22,6 +22,16 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+
+  <!-- Register the upgrade step -->
+  <genericsetup:upgradeStep
+      title="Add catalog indexes"
+      description=""
+      source="1001"
+      destination="1002"
+      handler="collective.opensearch.setuphandlers.update_registry"
+      profile="collective.opensearch:default" />
+
   <!-- -*- extra stuff goes here -*- -->
 
   <include package=".browser" />

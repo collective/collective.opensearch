@@ -49,6 +49,12 @@
                     </p>
                 </dd>
             </tal:loop>
+            <dt tal:condition="view/feed_html_link">Source:</dt>
+            <dd tal:condition="view/feed_html_link">
+                <a href="feed alternate html url"
+                    tal:attributes="href view/feed_html_link"
+                    tal:content="view/feed_title">feed title</a>
+            </dd>
         </dl>
     </div>
 </tal:results>

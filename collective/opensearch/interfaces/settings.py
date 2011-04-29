@@ -72,3 +72,11 @@ class IOpenSearchSettings(Interface):
         default=['Subject'],
         value_type=schema.Choice(vocabulary='collective.opensearch.indexes'),
         required=True)
+
+
+    cache_timeout = schema.Int(title=_(u'Cache time'),
+        description=_(u'Time in seconds a search feed is cached before refetching it'),
+        required=True,
+        min = 1,
+        max = 24*60*60,
+        default=360,)

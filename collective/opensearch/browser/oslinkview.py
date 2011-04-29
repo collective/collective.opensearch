@@ -21,8 +21,8 @@ from Products.Five import BrowserView
 from Products.CMFCore.utils import getToolByName
 
 from collective.opensearch import opensearchMessageFactory as _
-import feedparser
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from utils import fetch_url
 
 logger = logging.getLogger('collective.opensearch')
 
@@ -39,6 +39,8 @@ class OsLinkView(BrowserView):
     searchterm = ''
     results_template = ViewPageTemplateFile('osresults.pt')
     total_results = 0
+    feed_html_link = None
+    feed_title =''
 
     @property
     def searchterm(self):
@@ -77,14 +79,22 @@ class OsLinkView(BrowserView):
                 qurl = url.replace('%7BsearchTerms%7D',search_term)
         else:
             qurl = url
-        results= feedparser.parse(qurl)
-        try:
-            self.total_results = int(results.feed.get('opensearch_totalresults','0'))
-            if self.total_results == 0:
-                self.total_results = int(results.feed.get('totalresults','0'))
-        except ValueError:
-            pass
-        return results['entries']
+        rd = fetch_url(qurl)
+        results = rd['result']
+        if rd['type'] == 'feed':
+            try:
+                self.total_results = int(results.feed.get('opensearch_totalresults','0'))
+                if self.total_results == 0:
+                    self.total_results = int(results.feed.get('totalresults','0'))
+            except ValueError:
+                pass
+            for link in results.feed.get('links', []):
+                if (link['rel']=='alternate') and (link['type']=='text/html'):
+                    self.feed_html_link = link['href']
+            self.feed_title = results.feed.get('title', '')
+            return results['entries']
+        else:
+            return []
 
 class OsLinkSnippet(OsLinkView):
 

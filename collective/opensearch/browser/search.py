@@ -176,12 +176,19 @@ def query_catalog(context, request, show_all=False, quote_logic=False,
 def combine_queries(query_base, query_supplemental):
     query = {}
     for k, v in query_base.iteritems():
-        if query_supplemental.has_key(k):
+        if  k in query_supplemental:
             #XXX this is the tricky bit
-            #TODO combine in an meaningfull way
-            #for now we just use the items of query_base to override query_supplemental
-            query[k] = v
-            query_supplemental.pop(k)
+            # TODO combine in an meaningfull way
+            # currently only done for SearchableText as this is the only
+            # parameter exposed by the open search description
+            # otherwise we just use the items of query_base to override
+            # query_supplemental
+            # probably a yagni
+            if k == 'SearchableText':
+                query[k] = v + ' AND ' + query_supplemental[k]
+            else:
+                query[k] = v
+                query_supplemental.pop(k)
         else:
             query[k] = v
     for k, v in query_supplemental.iteritems():
