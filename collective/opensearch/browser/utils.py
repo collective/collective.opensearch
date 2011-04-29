@@ -23,6 +23,36 @@ from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
 from collective.opensearch.interfaces.settings import IOpenSearchSettings
 
+def parse_kml(kmlstring):
+    entries=[]
+    kmldom = xml.dom.minidom.parseString(kmlstring)
+    placemarks = kmldom.documentElement.getElementsByTagName('Placemark')
+    for placemark in placemarks:
+        entry = {'title':'', 'summary':'', 'summary_detail':
+                                {'type':'text/html'},
+                'link':'', 'tags': None}
+        title = placemark.getElementsByTagName('name')
+        if title:
+            entry['title'] = title[0].childNodes[0].data
+        else:
+            entry['title'] =''
+        summary = placemark.getElementsByTagName('description')
+        if summary:
+            desc = ''
+            for snode in summary[0].childNodes:
+                if snode.nodeType == snode.CDATA_SECTION_NODE:
+                    desc += snode.data
+                elif snode.nodeType == snode.TEXT_NODE:
+                    desc += snode.data #XXX unescape this
+                else:
+                    pass
+
+            entry['summary'] = desc
+        links = placemark.getElementsByTagName('atom:link')
+        for link in links:
+            entry['link'] = link.getAttribute('href')
+        entries.append(entry)
+    return entries
 
 def _fetch_url_cachekey(fun, url):
     RAM_CACHE_SECONDS = 360

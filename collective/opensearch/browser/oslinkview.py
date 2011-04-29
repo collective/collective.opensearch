@@ -22,7 +22,7 @@ from Products.CMFCore.utils import getToolByName
 
 from collective.opensearch import opensearchMessageFactory as _
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from utils import fetch_url
+from utils import fetch_url, parse_kml
 
 logger = logging.getLogger('collective.opensearch')
 
@@ -93,6 +93,8 @@ class OsLinkView(BrowserView):
                     self.feed_html_link = link['href']
             self.feed_title = results.feed.get('title', '')
             return results['entries']
+        elif rd['type'] == 'kml':
+            return parse_kml(results)
         else:
             return []
 
