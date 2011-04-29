@@ -14,8 +14,8 @@
 #       MA 02110-1301, USA.
 import feedparser
 import urllib2
+import chardet
 from time import time
-import elementtree.ElementTree as ET
 import xml.dom.minidom
 from plone.memoize import ram
 
@@ -59,13 +59,27 @@ def fetch_url(url):
         result = feed.read()
         rtype = 'kml'
     elif feed.info().type == 'text/xml':
-        body = feed.read().encode('utf-8')
-        pxml = xml.dom.minidom.parseString(body)
-        if pxml.documentElement.namespaceURI.startswith('http://www.opengis.net/kml/'):
-            rtype = 'kml'
-            result = body
+        body = feed.read()
+        # before passing it to minidom we need to determine the encoding
+        try:
+            charset = feed.headers.getparam('charset')
+            pbody = body.decode(charset).encode('ascii', 'xmlcharrefreplace')
+        except (UnicodeDecodeError, LookupError):
+            charset = chardet.detect(body)['encoding']
+            pbody = body.decode(charset, 'ignore').encode('ascii', 'xmlcharrefreplace')
+        pxml = xml.dom.minidom.parseString(pbody)
+        if pxml.documentElement.namespaceURI:
+            if pxml.documentElement.namespaceURI.startswith('http://www.opengis.net/kml/'):
+                rtype = 'kml'
+                result = pbody.encode('utf-8')
+            else:
+                result = feedparser.parse(body, response_headers = feed.headers.dict)
+                rtype='feed'
         else:
-            result = feedparser.parse(body, response_headers = feed.headers.dict)
-            rtype='feed'
-
+            if pxml.documentElement.tagName == 'kml':
+                rtype = 'kml'
+                result = pbody.encode('utf-8')
+            else:
+                result = feedparser.parse(body, response_headers = feed.headers.dict)
+                rtype='feed'
     return {'errors': errors, 'result': result, 'type': rtype}

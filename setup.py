@@ -60,6 +60,7 @@ setup(name='collective.opensearch',
                         # -*- Extra requirements: -*-
                          'plone.app.registry',
                          'feedparser',
+                         'chardet',
                         ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),
