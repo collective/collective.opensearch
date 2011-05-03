@@ -16,12 +16,15 @@ import feedparser
 import urllib2
 import chardet
 from time import time
+import logging
 import xml.dom.minidom
 from plone.memoize import ram
 
 from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
 from collective.opensearch.interfaces.settings import IOpenSearchSettings
+
+logger = logging.getLogger('collective.opensearch')
 
 def parse_kml(kmlstring):
     entries=[]
@@ -97,19 +100,26 @@ def fetch_url(url):
         except (UnicodeDecodeError, LookupError):
             charset = chardet.detect(body)['encoding']
             pbody = body.decode(charset, 'ignore').encode('ascii', 'xmlcharrefreplace')
-        pxml = xml.dom.minidom.parseString(pbody)
-        if pxml.documentElement.namespaceURI:
-            if pxml.documentElement.namespaceURI.startswith('http://www.opengis.net/kml/'):
-                rtype = 'kml'
-                result = pbody.encode('utf-8')
+        try:
+            pxml = xml.dom.minidom.parseString(pbody)
+            if pxml.documentElement.namespaceURI:
+                if pxml.documentElement.namespaceURI.startswith('http://www.opengis.net/kml/'):
+                    rtype = 'kml'
+                    result = pbody.encode('utf-8')
+                else:
+                    result = feedparser.parse(body, response_headers = feed.headers.dict)
+                    rtype='feed'
             else:
-                result = feedparser.parse(body, response_headers = feed.headers.dict)
-                rtype='feed'
-        else:
-            if pxml.documentElement.tagName == 'kml':
-                rtype = 'kml'
-                result = pbody.encode('utf-8')
-            else:
-                result = feedparser.parse(body, response_headers = feed.headers.dict)
-                rtype='feed'
+                if pxml.documentElement.tagName == 'kml':
+                    rtype = 'kml'
+                    result = pbody.encode('utf-8')
+                else:
+                    result = feedparser.parse(body, response_headers = feed.headers.dict)
+                    rtype='feed'
+        except Exception, e:
+            logger.info('exeption raised in fetch_url: %s' % e)
+            #minidom cannot parse this, -> probably a messed up feed
+            errors = e
+            result = feedparser.parse(body, response_headers = feed.headers.dict)
+            rtype='feed'
     return {'errors': errors, 'result': result, 'type': rtype}
