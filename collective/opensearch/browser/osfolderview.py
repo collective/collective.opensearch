@@ -33,7 +33,7 @@ class OSFolderView(BrowserView):
 
     @property
     def searchterm(self):
-        return self.request.form.get('SearchableText', '')
+        return self.request.form.get('searchTerms', '')
 
     @property
     def portal_catalog(self):
@@ -52,7 +52,7 @@ class OSFolderView(BrowserView):
 
     def get_js(self, link):
         vars = {}
-        url = '/opensearchresults.html?SearchableText='
+        url = '/opensearchresults.html?searchTerms='
         vars['url'] = link.getURL() + url + urllib.quote_plus(self.searchterm)
         vars['id'] = 'searchresults-' + link.id
         return self.js_template % vars

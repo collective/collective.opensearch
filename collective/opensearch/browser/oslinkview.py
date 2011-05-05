@@ -22,7 +22,7 @@ from Products.CMFCore.utils import getToolByName
 
 from collective.opensearch import opensearchMessageFactory as _
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from utils import fetch_url, parse_kml
+from utils import fetch_url, parse_kml, substitute_parameters
 
 logger = logging.getLogger('collective.opensearch')
 
@@ -44,7 +44,7 @@ class OsLinkView(BrowserView):
 
     @property
     def searchterm(self):
-        return self.request.form.get('SearchableText', '')
+        return self.request.form.get('searchTerms', '')
 
     def has_searchterm(self):
         url = self.context.getRemoteUrl()
@@ -76,7 +76,7 @@ class OsLinkView(BrowserView):
             if not search_term:
                     return []
             else:
-                qurl = url.replace('%7BsearchTerms%7D',search_term)
+                qurl = substitute_parameters(url, self.request.form)
         else:
             qurl = url
         rd = fetch_url(qurl)

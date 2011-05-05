@@ -39,26 +39,26 @@ class DescriptionView(BrowserView):
             'template': self.context.absolute_url() + '/' + self.__name__,
             'type': 'application/opensearchdescription+xml',
             'indexOffset' : None})
-        urls.append({'rel': None,
+        urls.append({'rel': 'results',
             'template': self.context.absolute_url() + '/opensearch_rss.xml?SearchableText={searchTerms}&b_start:int={startIndex?}&b_size:int={count?}',
             'type': 'application/rss+xml',
             'indexOffset' : '0'})
-        urls.append({'rel': None,
+        urls.append({'rel': 'results',
             'template': self.context.absolute_url() + '/opensearch_atom.xml?SearchableText={searchTerms}&b_start:int={startIndex?}&b_size:int={count?}',
             'type': 'application/atom+xml',
             'indexOffset' : '0'})
         if self.settings.suggestion_limit > 0 and IPloneSiteRoot.providedBy(self.context):
-            urls.append({'rel': None,
+            urls.append({'rel': 'suggestions',
                 'template': self.context.absolute_url() + '/opensearch_suggestions?command={searchTerms}',
                 'type': 'application/x-suggestions+json',
                 'indexOffset' : None})
         if IPloneSiteRoot.providedBy(self.context):
-            urls.append({'rel': None,
+            urls.append({'rel': 'results',
                 'template': self.context.absolute_url() + '/search?SearchableText={searchTerms}',
                 'type': 'text/html',
                 'indexOffset' : '0'})
         elif IATTopic.providedBy(self.context):
-            urls.append({'rel': None,
+            urls.append({'rel': 'results',
                 'template': self.context.absolute_url() + '/opensearch_html.html?SearchableText={searchTerms}',
                 'type': '"text/html',
                 'indexOffset' : '0'})

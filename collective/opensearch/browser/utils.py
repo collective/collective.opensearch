@@ -13,7 +13,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 import feedparser
-import urllib2
+import urllib2, urllib, urlparse
 import chardet
 from time import time
 import logging
@@ -25,6 +25,41 @@ from plone.registry.interfaces import IRegistry
 from collective.opensearch.interfaces.settings import IOpenSearchSettings
 
 logger = logging.getLogger('collective.opensearch')
+
+def substitute_parameters(url, form):
+    """ The search client must replace every instance of a template
+        parameter with a value before the search request is performed.
+
+        If a search engine wishes to indicate that a template parameter
+        is optional and can be replaced with the empty string, then
+        the "?" notation should be used.
+
+    http://www.opensearch.org/Specifications/OpenSearch/1.1#Substitution_rules
+    """
+
+    #urlparse.parse_qs(urlparse.urlparse(urllib.unquote('http://api.search.yahoo.com/WebSearchService/rss/webSearch.xml?appid=yahoosearchwebrss&query=%7BSearchTerms%7D&adult_ok=1&adult_ok=2')).query)
+    #urllib.urlencode((('query', 'Search Terms'), ('adult_ok', '1'), ('adult_ok', '2'), ('appid', 'yahoosearchwebrss')))
+
+    url_obj = urlparse.urlparse(urllib.unquote(url))
+    query = urlparse.parse_qs(url_obj.query)
+    params = []
+    for k,v_list in query.iteritems():
+        for v in v_list:
+            if v.startswith('{') and v.endswith('?}'):
+                parameter = form.get(v[1:-2], None)
+                if parameter:
+                    params.append((k,parameter))
+            elif v.startswith('{') and v.endswith('}'):
+                parameter = form.get(v[1:-1], None)
+                if parameter:
+                    params.append((k,parameter))
+                else:
+                     logger.info('missing parameter: %s' % v)
+            else:
+                params.append((k,v))
+    return urlparse.urlunparse((url_obj.scheme, url_obj.netloc,
+        url_obj.path, url_obj.params, urllib.urlencode(params),
+        url_obj.fragment))
 
 def parse_kml(kmlstring):
     entries=[]
