@@ -1,5 +1,18 @@
 Changelog
 =========
+1.1 (2011/05/11)
+----------------
+
+cache feeds when fetching remote searchresults
+
+display opensearch:totalresults when available
+
+show different opensearchdescriptions for site and topic
+
+add opensearch views to topics, search inside topics
+
+add configuration what indexes to use for categorization, abstract atom
+and rss view entries
 
 1.0 (2011/03/29)
 ----------------

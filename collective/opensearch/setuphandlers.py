@@ -7,9 +7,9 @@ def update_registry(context, logger=None):
     if logger is None:
         # Called as upgrade step: define our own logger.
         logger = logging.getLogger('collective.opensearch')
-        logger.info("Empty upgrade step")
+        logger.info("import regisitry setting")
     setup = getToolByName(context, 'portal_setup')
-    setup.runImportStepFromProfile(PROFILE_ID, 'componentregistry')
+    #setup.runImportStepFromProfile(PROFILE_ID, 'portal_registry')
 
 
 

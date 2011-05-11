@@ -24,13 +24,13 @@
 
 
   <!-- Register the upgrade step -->
-  <genericsetup:upgradeStep
-      title="Add catalog indexes"
+  <!--genericsetup:upgradeStep
+      title="Import registry after schema change"
       description=""
-      source="1001"
-      destination="1002"
+      source="*"
+      destination="1003"
       handler="collective.opensearch.setuphandlers.update_registry"
-      profile="collective.opensearch:default" />
+      profile="collective.opensearch:default" /-->
 
   <!-- -*- extra stuff goes here -*- -->
 
