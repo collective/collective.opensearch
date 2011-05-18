@@ -45,7 +45,7 @@ class AutoDiscovery(base.ViewletBase):
                 self.settings = registry.forInterface(IOpenSearchSettings)
             except KeyError:
                 pass
-       except Exception, e:
+        except Exception, e:
             logger.info('exeption raised in AutoDiscovery viewlet: %s' % e)
 
     def getTitle(self):
