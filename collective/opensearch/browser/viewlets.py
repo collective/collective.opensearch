@@ -14,7 +14,9 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##################################################################################
+import logging
 from zope.component import getUtility
+from zope.component.interfaces import ComponentLookupError
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from plone.app.layout.viewlets import common as base
@@ -25,6 +27,9 @@ from Products.ATContentTypes.interfaces.topic import IATTopic
 
 from collective.opensearch.interfaces.settings import IOpenSearchSettings
 
+logger = logging.getLogger('collective.opensearch')
+
+
 class AutoDiscovery(base.ViewletBase):
     """ Viewlet for AutoDiscovery """
     settings = None
@@ -34,11 +39,14 @@ class AutoDiscovery(base.ViewletBase):
         # Implement the ViewletBase
         super(AutoDiscovery, self).__init__(context, request, view, manager)
         # Get the registry
-        registry = getUtility(IRegistry)
         try:
-            self.settings = registry.forInterface(IOpenSearchSettings)
-        except KeyError:
-            pass
+            registry = getUtility(IRegistry)
+            try:
+                self.settings = registry.forInterface(IOpenSearchSettings)
+            except KeyError:
+                pass
+       except Exception, e:
+            logger.info('exeption raised in AutoDiscovery viewlet: %s' % e)
 
     def getTitle(self):
         try:
