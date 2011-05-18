@@ -1,5 +1,10 @@
 Changelog
 =========
+1.2 (2011/05/18)
+----------------
+
+catch all exceptions in AutoDiscovery viewlet
+
 1.1 (2011/05/11)
 ----------------
 
