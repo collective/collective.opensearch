@@ -57,9 +57,19 @@ def substitute_parameters(url, form):
                      logger.info('missing parameter: %s' % v)
             else:
                 params.append((k,v))
-    return urlparse.urlunparse((url_obj.scheme, url_obj.netloc,
+    parsed_url = urlparse.urlunparse((url_obj.scheme, url_obj.netloc,
         url_obj.path, url_obj.params, urllib.urlencode(params),
         url_obj.fragment))
+    if (not('{searchTerms}' in query) and
+        form.get('searchTerms', None) and
+        (parsed_url.find('%7BsearchTerms%7D') > 0)):
+        #this is a hack to get urls not conforming to opensearch definitions
+        #i.e {searchTerms} is not a parameter value on its own working anyway
+        # for e.g http://www.eprints.org/
+        parsed_url = parsed_url.replace('%7BsearchTerms%7D', form.get('searchTerms',''))
+    return parsed_url
+
+
 
 def parse_kml(kmlstring):
     entries=[]
