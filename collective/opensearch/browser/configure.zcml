@@ -5,6 +5,7 @@
     i18n_domain="collective.opensearch">
 
   <include package="plone.app.contentmenu" />
+  <include package="Products.CMFCore" file="configure.zcml" />
 
   <!-- -*- extra stuff goes here -*- -->
 

@@ -59,15 +59,16 @@ class OsLinkView(BrowserView):
         self.request = request
 
     def is_html(self, entry):
-        if entry['summary_detail']['type'] in ['text/html',
-                                            'application/xhtml+xml']:
-            return True
-        elif entry['summary_detail']['type']=='text/plain':
-            return False
-        else:
-            logger.info('Unknown format for summary detail: %s' %
-                entry['summary_detail']['type'])
-            return False
+        if entry.get('summary_detail'):
+            if entry['summary_detail']['type'] in ['text/html',
+                                                'application/xhtml+xml']:
+                return True
+            elif entry['summary_detail']['type']=='text/plain':
+                return False
+            else:
+                logger.info('Unknown format for summary detail: %s' %
+                    entry['summary_detail']['type'])
+                return False
 
     def search_results(self):
         url = self.context.getRemoteUrl()
@@ -103,6 +104,7 @@ class OsLinkSnippet(OsLinkView):
 
 
     def __call__(self):
+        self.request.response.setHeader('X-Theme-Disabled', 'True')
         return self.display_results()
 
 

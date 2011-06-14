@@ -45,6 +45,7 @@ setup(name='collective.opensearch',
       classifiers=[
         'Framework :: Plone',
         'Intended Audience :: Developers',
+        "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
         'License :: OSI Approved :: GNU General Public License (GPL)',
         ],
       keywords='',
