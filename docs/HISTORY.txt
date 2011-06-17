@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.4 (2011/06/17)
+----------------
+
+ - plone 4.1 compatible
+ - give diazo/deliverance a hint not to style the ajax response
+
 1.3 (2011/05/19)
 ----------------
 
