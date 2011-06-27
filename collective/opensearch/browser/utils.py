@@ -17,7 +17,8 @@ import urllib2, urllib, urlparse
 import chardet
 from time import time
 import logging
-import xml.dom.minidom
+from elementtree.ElementTree import XML, tostring
+from htmllaundry import sanitize
 from plone.memoize import ram
 
 from zope.component import getUtility
@@ -63,42 +64,46 @@ def substitute_parameters(url, form):
     if (not('{searchTerms}' in query) and
         form.get('searchTerms', None) and
         (parsed_url.find('%7BsearchTerms%7D') > 0)):
-        #this is a hack to get urls not conforming to opensearch definitions
-        #i.e {searchTerms} is not a parameter value on its own working anyway
+        # this is a hack to get urls not conforming to opensearch definitions
+        # (i.e {searchTerms} is not a parameter value on its own) working anyway
         # for e.g http://www.eprints.org/
         parsed_url = parsed_url.replace('%7BsearchTerms%7D', form.get('searchTerms',''))
     return parsed_url
 
+def sanitize_kml_description(description):
+    if description:
+        desc = description[0].text
+        #sanitize html snippet to avoid XSS
+        return sanitize(desc)
 
+def sanitize_kml(kmlstring):
+    kmldom = XML(kmlstring)
+    ns = kmldom.tag.strip('kml')
+    placemarks = kmldom.getchildren()[0].findall(ns+'Placemark')
+    for placemark in placemarks:
+        summary = placemark.findall(ns+'description')
+        summary[0].text = sanitize_kml_description(summary)
+    return tostring(kmldom, 'utf-8')
 
 def parse_kml(kmlstring):
     entries=[]
-    kmldom = xml.dom.minidom.parseString(kmlstring)
-    placemarks = kmldom.documentElement.getElementsByTagName('Placemark')
+    kmldom = XML(kmlstring)
+    ns = kmldom.tag.strip('kml')
+    placemarks = kmldom.getchildren()[0].findall(ns+'Placemark')
     for placemark in placemarks:
         entry = {'title':'', 'summary':'', 'summary_detail':
                                 {'type':'text/html'},
                 'link':'', 'tags': None}
-        title = placemark.getElementsByTagName('name')
+        title = placemark.findall(ns + 'name')
         if title:
-            entry['title'] = title[0].childNodes[0].data
+            entry['title'] = title[0].text
         else:
             entry['title'] =''
-        summary = placemark.getElementsByTagName('description')
-        if summary:
-            desc = ''
-            for snode in summary[0].childNodes:
-                if snode.nodeType == snode.CDATA_SECTION_NODE:
-                    desc += snode.data
-                elif snode.nodeType == snode.TEXT_NODE:
-                    desc += snode.data #XXX unescape this
-                else:
-                    pass
-
-            entry['summary'] = desc
-        links = placemark.getElementsByTagName('atom:link')
+        summary = placemark.findall(ns+'description')
+        entry['summary'] = sanitize_kml_description(summary)
+        links = placemark.findall('{http://www.w3.org/2005/Atom}link')
         for link in links:
-            entry['link'] = link.getAttribute('href')
+            entry['link'] = link.attrib.get('href')
         entries.append(entry)
     return entries
 
@@ -138,7 +143,7 @@ def fetch_url(url):
         rtype = 'kml'
     elif feed.info().type == 'text/xml':
         body = feed.read()
-        # before passing it to minidom we need to determine the encoding
+        # before passing it to etree we need to determine the encoding
         try:
             charset = feed.headers.getparam('charset')
             pbody = body.decode(charset).encode('ascii', 'xmlcharrefreplace')
@@ -146,25 +151,23 @@ def fetch_url(url):
             charset = chardet.detect(body)['encoding']
             pbody = body.decode(charset, 'ignore').encode('ascii', 'xmlcharrefreplace')
         try:
-            pxml = xml.dom.minidom.parseString(pbody)
-            if pxml.documentElement.namespaceURI:
-                if pxml.documentElement.namespaceURI.startswith('http://www.opengis.net/kml/'):
-                    rtype = 'kml'
-                    result = pbody.encode('utf-8')
-                else:
-                    result = feedparser.parse(body, response_headers = feed.headers.dict)
-                    rtype='feed'
+            tree = XML(pbody)
+            if u'http://www.opengis.net/kml/' in tree.tag:
+                rtype = 'kml'
+                result = pbody.encode('utf-8')
+            elif tree.tag.endswith('kml'):
+                rtype = 'kml'
+                result = pbody.encode('utf-8')
             else:
-                if pxml.documentElement.tagName == 'kml':
-                    rtype = 'kml'
-                    result = pbody.encode('utf-8')
-                else:
-                    result = feedparser.parse(body, response_headers = feed.headers.dict)
-                    rtype='feed'
+                result = feedparser.parse(body, response_headers = feed.headers.dict)
+                rtype='feed'
+
         except Exception, e:
             logger.info('exeption raised in fetch_url: %s' % e)
-            #minidom cannot parse this, -> probably a messed up feed
+            #ElementTree cannot parse this, -> probably a messed up feed
             errors = e
             result = feedparser.parse(body, response_headers = feed.headers.dict)
             rtype='feed'
+    if rtype == 'kml':
+        result = sanitize_kml(result)
     return {'errors': errors, 'result': result, 'type': rtype}
