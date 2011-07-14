@@ -79,9 +79,9 @@ def sanitize_kml_description(description):
 def sanitize_kml(kmlstring):
     kmldom = XML(kmlstring)
     ns = kmldom.tag.strip('kml')
-    placemarks = kmldom.getchildren()[0].findall(ns+'Placemark')
+    placemarks = kmldom.findall('.//%sPlacemark' % ns)
     for placemark in placemarks:
-        summary = placemark.findall(ns+'description')
+        summary = placemark.findall('%sdescription' % ns)
         summary[0].text = sanitize_kml_description(summary)
     return tostring(kmldom, 'utf-8')
 
@@ -89,7 +89,7 @@ def parse_kml(kmlstring):
     entries=[]
     kmldom = XML(kmlstring)
     ns = kmldom.tag.strip('kml')
-    placemarks = kmldom.getchildren()[0].findall(ns+'Placemark')
+    placemarks = kmldom.findall('.//%sPlacemark' % ns)
     for placemark in placemarks:
         entry = {'title':'', 'summary':'', 'summary_detail':
                                 {'type':'text/html'},
