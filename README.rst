@@ -130,6 +130,6 @@ Known limitations issues and caveats
 - internal searches as described in [5] will always be executed as 'anonymous'
 
 
-- Code repository: http://svn.plone.org/svn/collective/collective.opensearch/
-- Report bugs at http://plone.org/products/plos/issues
+- Code repository: https://github.com/collective/collective.opensearch
+- Report bugs at https://github.com/collective/collective.opensearch/issues
 
