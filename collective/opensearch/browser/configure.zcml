@@ -105,6 +105,13 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      for="*"
+      name="opensearch.json"
+      class=".jsonview.JsonView"
+      allowed_interface=".jsonview.IJsonView"
+      permission="zope2.View"
+      />
 
   <browser:page
       for="*"
