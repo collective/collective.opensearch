@@ -9,28 +9,26 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.4'
+version = '1.5'
 
 long_description = (
     read('README.rst')
     + '\n' +
-    'Change history\n'
-    '**************\n'
-    + '\n' +
     read("docs", "HISTORY.txt")
-    + '\n' +
-    'Detailed Documentation\n'
-    '**********************\n'
-    + '\n' +
-    read('collective', 'opensearch', 'README.txt')
-    + '\n' +
-    'Contributors\n'
-    '************\n'
-    + '\n' +
-    read('CONTRIBUTORS.txt')
-    + '\n' +
-    'Download\n'
-    '********\n')
+    #+ '\n' +
+    #'Detailed Documentation\n'
+    #'**********************\n'
+    #+ '\n' +
+    #read('collective', 'opensearch', 'README.txt')
+    #+ '\n' +
+    #'Contributors\n'
+    #'************\n'
+    #+ '\n' +
+    #read('CONTRIBUTORS.txt')
+    #+ '\n' +
+    #'Download\n'
+    #'********\n'
+    )
 
 tests_require = ['zope.testing']
 
@@ -72,6 +70,6 @@ setup(name='collective.opensearch',
       [z3c.autoinclude.plugin]
       target = plone
       """,
-      setup_requires=["PasteScript"],
-      paster_plugins=["ZopeSkel"],
+      #setup_requires=["PasteScript"],
+      #paster_plugins=["ZopeSkel"],
       )

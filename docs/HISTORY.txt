@@ -1,36 +1,36 @@
 Changelog
 =========
 
+1.5 (2014/01/08)
+----------------
+
+- add JSON Results view
+
 1.4 (2011/06/17)
 ----------------
 
- - plone 4.1 compatible
- - give diazo/deliverance a hint not to style the ajax response
+- plone 4.1 compatible
+- give diazo/deliverance a hint not to style the ajax response
 
 1.3 (2011/05/19)
 ----------------
 
-support http://www.eprints.org/ result feeds (not open search
-compliant but widely used)
+- support http://www.eprints.org/ result feeds (not open search compliant but widely used)
 
 1.2 (2011/05/18)
 ----------------
 
-catch all exceptions in AutoDiscovery viewlet
+- catch all exceptions in AutoDiscovery viewlet
 
 1.1 (2011/05/11)
 ----------------
 
-cache feeds when fetching remote searchresults
-
-display opensearch:totalresults when available
-
-show different opensearchdescriptions for site and topic
-
-add opensearch views to topics, search inside topics
-
-add configuration what indexes to use for categorization, abstract atom
-and rss view entries
+- cache feeds when fetching remote searchresults
+- display opensearch:totalresults when available
+- show different opensearchdescriptions for site and topic
+- add opensearch views to topics, search inside topics
+- add configuration what indexes to use for categorization, abstract atom
+- and rss view entries
 
 1.0 (2011/03/29)
 ----------------
@@ -38,10 +38,7 @@ and rss view entries
 - Created recipe with ZopeSkel
 - implement all functionality from PLOS and JaoP
 - add opensearch view for link
-- add opensearch view for folder, all opensearch links inside that folder
-    act as a metasearch
-  ["nan"]
-
+- add opensearch view for folder, all opensearch links inside that folder act as a metasearch
 
 JaoP  0.1 (Sep 23, 2008)
 ------------------------
