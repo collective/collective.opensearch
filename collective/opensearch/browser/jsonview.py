@@ -16,7 +16,7 @@ class JsonView(AtomView):
             "updated": self.updated(),
             "id": self.uid,
             "generator": {"uri": "http://plone.org/products/plos",
-                        "version": "1.0",
+                        "version": self.version,
                         "name": "collective.opensearch"},
             "totalResults": self.total_results,
             "startIndex": self.start,
