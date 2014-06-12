@@ -18,6 +18,10 @@ import chardet
 from time import time
 import logging
 from xml.etree.ElementTree import XML, tostring
+try:
+    import xml.etree.ElementTree as etree
+except ImportError: 
+    import elementtree.ElementTree as etree
 from htmllaundry import sanitize
 from plone.memoize import ram
 
