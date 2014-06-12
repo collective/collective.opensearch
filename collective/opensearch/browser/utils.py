@@ -17,11 +17,10 @@ import urllib2, urllib, urlparse
 import chardet
 from time import time
 import logging
-from xml.etree.ElementTree import XML, tostring
 try:
-    import xml.etree.ElementTree as etree
+    from xml.etree.ElementTree import XML, tostring
 except ImportError: 
-    import elementtree.ElementTree as etree
+    from elementtree.ElementTree import XML, tostring
 from htmllaundry import sanitize
 from plone.memoize import ram
 
