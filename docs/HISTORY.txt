@@ -4,6 +4,11 @@ Changelog
 1.6 (2017-11-20)
 ----------------
 
+- ElementTree fixes
+
+1.5 (2014/01/08)
+----------------
+
 - add JSON Results view
 
 1.4 (2011/06/17)
