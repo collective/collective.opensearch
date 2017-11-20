@@ -1,2 +1,3 @@
 "Christian Ledermann", Author
+"Jean Jordan", Contributor
 
